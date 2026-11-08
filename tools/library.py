@@ -1,11 +1,10 @@
-"""Bridge to the existing Classifi engine; source PDFs never enter the site data."""
+"""Build ACEat textbook pages with the engine bundled in this repository."""
 from __future__ import annotations
 
 import argparse
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
-import importlib
 import json
 import os
 from pathlib import Path
@@ -13,6 +12,10 @@ import re
 import subprocess
 import sys
 import tempfile
+
+from textbook_engine import contents, pages, excerpts, client
+
+ENGINE = {"extract_book_contents": contents, "generate_topic_pages": pages, "import_book": excerpts, "tutor_graph": client}
 
 ROOT = Path(__file__).resolve().parents[1]
 ID_PATTERN = re.compile(r"[a-z][a-z0-9-]{0,63}\Z")
@@ -75,35 +78,12 @@ def editorial_lock(root: Path):
         stream.close()
 
 
-def engine_directory(value: str | Path | None = None) -> Path:
-    return Path(value or os.environ.get("CLASSIFI_DIR") or ROOT.parent / "Classifi").resolve()
-
-
-def load_engine(directory: Path | None = None):
-    directory = engine_directory(directory)
-    required = ["extract_book_contents", "generate_topic_pages", "import_book", "tutor_graph"]
-    if any(not (directory / f"{name}.py").is_file() for name in required):
-        raise ImportFailure("Не найдена актуальная копия Classifi. Укажите папку через --engine-dir или CLASSIFI_DIR.")
-    sys.path.insert(0, str(directory))
-    try:
-        modules = {name: importlib.import_module(name) for name in required}
-    except ImportError as error:
-        raise ImportFailure("Установите зависимости из requirements-import.txt в Python-окружение Classifi.") from error
-    if any(Path(module.__file__).resolve().parent != directory for module in modules.values()):
-        raise ImportFailure("В процессе уже загружена другая копия Classifi. Перезапустите панель.")
-    # An ACEat-specific env file is optional; otherwise reuse Classifi's existing config.
-    if (ROOT / ".env").is_file():
-        modules["tutor_graph"].ENV_FILE = ROOT / ".env"
-    return modules
-
-
-def engine_info(modules) -> dict:
-    directory = Path(modules["tutor_graph"].__file__).resolve().parent
-    try:
-        revision = subprocess.run(["git", "-C", str(directory), "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5).stdout.strip()
-    except (OSError, subprocess.TimeoutExpired):
-        revision = ""
-    return {"name": "Classifi", "repository": "https://github.com/The-Fabulous/Classifi", "revision": revision}
+def engine_info() -> dict:
+    folder = ROOT / "textbook_engine"
+    digest = hashlib.sha256()
+    for filename in ("contents.py", "pages.py", "excerpts.py", "client.py"):
+        digest.update((folder / filename).read_bytes())
+    return {"name": "ACEat Book Engine", "revision": digest.hexdigest()[:12], "based_on": "Classifi 93d232d"}
 
 
 def read_catalog(root: Path) -> dict:
@@ -136,7 +116,7 @@ def validate_options(options: dict) -> dict:
     if start < 1 or end < start or end - start + 1 > MAX_PAGES:
         raise ImportFailure(f"Укажите корректный диапазон до {MAX_PAGES} страниц PDF.")
     if result["mode"] == "pages" and result["subject"] != "math":
-        raise ImportFailure("Обработка текста страниц в текущем Classifi предназначена для Math. Для других направлений выберите оглавление.")
+        raise ImportFailure("Обработка текста страниц в драйвере предназначена для Math. Для других направлений выберите оглавление.")
     result["replace"] = result.get("replace") is True
     return result
 
@@ -155,11 +135,11 @@ def validate_chapter(chapter: dict) -> None:
             raise ImportFailure("Движок вернул раздел без учебного материала.")
 
 
-def import_pdf(pdf_path: Path, options: dict, root: Path = ROOT, engine_dir: Path | None = None, progress=lambda **kwargs: None) -> dict:
+def import_pdf(pdf_path: Path, options: dict, root: Path = ROOT, progress=lambda **kwargs: None) -> dict:
     options = validate_options(options)
-    modules = load_engine(engine_dir)
+    modules = ENGINE
     if not modules["tutor_graph"].load_config()["OPENAI_API_KEY"]:
-        raise ImportFailure("Не настроен ключ AI. Добавьте его в Classifi/.env или ACEat/.env локально.")
+        raise ImportFailure("Не настроен ключ AI. Добавьте его в ACEat/.env или переменную среды OPENAI_API_KEY.")
     with editorial_lock(root):
         catalog = read_catalog(root)
         previous = next((item for item in catalog["textbooks"] if item.get("id") == options["id"]), None)
@@ -178,7 +158,7 @@ def import_pdf(pdf_path: Path, options: dict, root: Path = ROOT, engine_dir: Pat
         except Exception as error:
             raise ImportFailure("Не удалось открыть PDF. Проверьте файл.") from error
         digest = hashlib.sha256(pdf_path.read_bytes()).hexdigest()
-        signature = hashlib.sha256(json.dumps({"pdf": digest, "options": options, "engine": engine_info(modules)}, sort_keys=True).encode()).hexdigest()
+        signature = hashlib.sha256(json.dumps({"pdf": digest, "options": options, "engine": engine_info()}, sort_keys=True).encode()).hexdigest()
         cache = root / ".local/cache" / signature
         cache.mkdir(parents=True, exist_ok=True)
         try:
@@ -230,7 +210,7 @@ def import_pdf(pdf_path: Path, options: dict, root: Path = ROOT, engine_dir: Pat
         source_name = Path(options.get("filename", pdf_path.name)).name[:180]
         page_range = f"{options['start_page']}–{options['end_page']}"
         source = f"{source_name}, страницы PDF {page_range}"
-        book = {"format": "aceat.classifi-book.v1", "id": options["id"], "title": options["title"], "author": options["author"], "subject": options["subject"], "overview": options["description"], "source": source, "generation_mode": options["mode"], "engine": engine_info(modules), "created_at": datetime.now(timezone.utc).isoformat(), "chapters": chapters}
+        book = {"format": "aceat.classifi-book.v1", "id": options["id"], "title": options["title"], "author": options["author"], "subject": options["subject"], "overview": options["description"], "source": source, "generation_mode": options["mode"], "engine": engine_info(), "created_at": datetime.now(timezone.utc).isoformat(), "chapters": chapters}
         content_hash = hashlib.sha256(json.dumps(book, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:12]
         relative_path = f"./data/books/{options['id']}-{content_hash}.json"
         entry = {"id": options["id"], "title": options["title"], "author": options["author"], "subject": options["subject"], "description": options["description"], "source": source, "chapter_count": len(chapters), "format": "classifi", "book_path": relative_path, "url": f"#book/{options['id']}"}
@@ -278,7 +258,7 @@ def publish_library(root: Path = ROOT) -> dict:
         if git("add", "--", *files).returncode:
             raise ImportFailure("Не удалось подготовить библиотеку к коммиту.")
         if git("diff", "--cached", "--quiet").returncode == 1:
-            if git("commit", "-m", "Publish Classifi textbook library").returncode:
+            if git("commit", "-m", "Publish textbook library").returncode:
                 raise ImportFailure("Не удалось создать коммит. Проверьте настройки Git.")
         if git("push", "origin", "main").returncode:
             raise ImportFailure("Push не завершён. Данные сохранены локально. Проверьте доступ к GitHub и синхронизацию ветки main, затем повторите публикацию.")
@@ -286,7 +266,7 @@ def publish_library(root: Path = ROOT) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Import a PDF with Classifi into ACEat.")
+    parser = argparse.ArgumentParser(description="Build an ACEat textbook page from a PDF. All processing code is bundled locally.")
     parser.add_argument("pdf", type=Path)
     parser.add_argument("--id", required=True)
     parser.add_argument("--title", required=True)
@@ -296,17 +276,24 @@ def main() -> int:
     parser.add_argument("--mode", choices=["contents", "pages"], default="contents")
     parser.add_argument("--start-page", type=int, required=True)
     parser.add_argument("--end-page", type=int, required=True)
-    parser.add_argument("--engine-dir", type=Path)
+    parser.add_argument("--publish", action="store_true", help="Commit generated library files and push to GitHub Pages after a successful build.")
     parser.add_argument("--replace", action="store_true")
     args = vars(parser.parse_args())
-    pdf, directory = args.pop("pdf"), args.pop("engine_dir")
+    pdf, publish = args.pop("pdf"), args.pop("publish")
     args["filename"] = pdf.name
     try:
-        entry = import_pdf(pdf, args, engine_dir=directory, progress=lambda **status: print(status["message"]))
+        entry = import_pdf(pdf, args, progress=lambda **status: print(status["message"]))
     except (ImportFailure, OSError) as error:
         print(f"Import failed: {error}", file=sys.stderr)
         return 1
-    print(f"Added: {entry['title']} → {entry['url']}")
+    print(f"Added: {entry['title']} -> {entry['url']}")
+    if publish:
+        try:
+            result = publish_library()
+        except (ImportFailure, OSError, subprocess.TimeoutExpired) as error:
+            print(f"Publish failed: {error}", file=sys.stderr)
+            return 1
+        print(f"Published: {result['url']}")
     return 0
 
 

@@ -207,7 +207,7 @@ async function openBook(id, chapterIndex, route) {
     if (chapterIndex > 0) { const link = addText(pagination, 'a', '← Предыдущая глава', 'button secondary'); link.href = `#book/${id}/${chapterIndex - 1}`; }
     if (chapterIndex + 1 < book.chapters.length) { const link = addText(pagination, 'a', 'Следующая глава →', 'button secondary'); link.href = `#book/${id}/${chapterIndex + 1}`; }
     body.append(pagination);
-    document.getElementById('reader-source').textContent = `${book.source || ''}. ${book.generation_mode === 'contents' ? 'Учебные объяснения созданы по темам оглавления, а не извлечены из полного текста книги.' : 'Учебные объяснения созданы по выбранным страницам книги.'} Подготовлено с помощью Classifi и ИИ; проверяй важные выводы по источнику.`;
+    document.getElementById('reader-source').textContent = `${book.source || ''}. ${book.generation_mode === 'contents' ? 'Учебные объяснения созданы по темам оглавления, а не извлечены из полного текста книги.' : 'Учебные объяснения созданы по выбранным страницам книги.'} Учебный материал подготовлен с помощью ИИ; проверяй важные выводы по источнику.`;
     state.hidden = true; document.getElementById('reader-layout').hidden = false;
     if (body.querySelector('.reader-formula') || body.textContent.includes('\\(')) loadMath().then(() => { if (location.hash.slice(1) === route) return window.MathJax.typesetPromise([body]); }).catch(() => { if (location.hash.slice(1) === route) addText(body, 'p', 'Сервис отображения формул недоступен: формулы показаны текстом.', 'editor-help'); });
   } catch (error) {

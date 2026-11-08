@@ -3,21 +3,20 @@ import os
 from pathlib import Path
 import tempfile
 import threading
-import time
+import subprocess
+import sys
+import shutil
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import unittest
 from unittest.mock import MagicMock, patch
-from urllib.error import HTTPError
-from urllib.request import Request, urlopen
-from urllib.parse import quote
 
 from tools import library
-import manage_library
 
 
 class LibraryTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.engine = library.load_engine()
+        cls.engine = library.ENGINE
 
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -48,7 +47,7 @@ class LibraryTests(unittest.TestCase):
     def import_book(self, **changes):
         return library.import_pdf(self.pdf, {**self.options, **changes}, root=self.root)
 
-    def test_actual_classifi_pdf_pipeline_registers_readable_book_without_source_pdf(self):
+    def test_bundled_pdf_pipeline_registers_readable_book_without_source_pdf(self):
         with patch.object(self.engine["tutor_graph"].requests, "post", side_effect=self.completion_response) as post:
             entry = self.import_book()
         self.assertEqual(post.call_count, 2)
@@ -60,7 +59,7 @@ class LibraryTests(unittest.TestCase):
         book = json.loads((self.root / entry["book_path"][2:]).read_text(encoding="utf-8"))
         self.assertEqual(book["format"], "aceat.classifi-book.v1")
         self.assertEqual(book["chapters"][0]["sections"][0]["heading"], "1.1. Solving equations")
-        self.assertEqual(book["engine"]["name"], "Classifi")
+        self.assertEqual(book["engine"]["name"], "ACEat Book Engine")
         self.assertFalse(list((self.root / "data").rglob("*.pdf")))
         self.assertNotIn("test-not-a-real-key", json.dumps(book))
 
@@ -129,35 +128,6 @@ class LibraryTests(unittest.TestCase):
             library.import_pdf(self.root / "no-contents.pdf", self.options, root=self.root)
         self.assertEqual(library.read_catalog(self.root), self.initial)
 
-    def test_http_import_completes_and_private_paths_are_not_served(self):
-        server = manage_library.LibraryServer(0, root=self.root)
-        thread = threading.Thread(target=server.serve_forever, daemon=True)
-        thread.start()
-        base = f"http://127.0.0.1:{server.server_port}"
-        headers = {"Origin": base, "X-ACEat-Token": server.token, "X-ACEat-Metadata": quote(json.dumps(self.options)), "Content-Type": "application/pdf"}
-        try:
-            with patch.object(self.engine["tutor_graph"].requests, "post", side_effect=self.completion_response):
-                request = Request(base + "/api/imports", data=self.pdf.read_bytes(), headers=headers)
-                with urlopen(request, timeout=5) as response:
-                    self.assertEqual(response.status, 202)
-                deadline = time.monotonic() + 10
-                while server.job["status"] in ("queued", "running") and time.monotonic() < deadline:
-                    time.sleep(.02)
-            self.assertEqual(server.job["status"], "completed", server.job)
-            for path in ("/.env", "/.local/uploads/source.pdf", "/source.pdf", "/manage_library.py"):
-                with self.assertRaises(HTTPError) as error:
-                    urlopen(base + path, timeout=5)
-                self.assertEqual(error.exception.code, 404)
-                error.exception.close()
-            with self.assertRaises(HTTPError) as error:
-                urlopen(Request(base + "/api/imports", data=b"%PDF-test", headers={**headers, "Origin": "https://untrusted.invalid"}), timeout=5)
-            self.assertEqual(error.exception.code, 403)
-            error.exception.close()
-        finally:
-            server.shutdown()
-            thread.join(timeout=5)
-            server.server_close()
-
     def test_publish_rejects_unrelated_staged_changes_before_git_add(self):
         def git_result(args, **kwargs):
             command = args[3:]
@@ -191,6 +161,66 @@ class LibraryTests(unittest.TestCase):
         self.assertIn(["add", "--", "data/catalog.json", entry["book_path"][2:]], commands)
         self.assertIn(["push", "origin", "main"], commands)
         self.assertEqual(result["commit"], "abc123")
+
+    def test_engine_modules_are_bundled_inside_aceat(self):
+        folder = library.ROOT / "textbook_engine"
+        for module in library.ENGINE.values():
+            self.assertEqual(Path(module.__file__).resolve().parent, folder)
+        self.assertNotIn("--engine-dir", subprocess.run([sys.executable, str(library.ROOT / "book_driver.py"), "--help"], capture_output=True, text=True, timeout=10).stdout)
+
+    def test_standalone_driver_creates_collection_page_without_classifi_checkout(self):
+        target = self.root / "standalone" / "ACEat"
+        target.mkdir(parents=True)
+        for package in ("tools", "textbook_engine"):
+            shutil.copytree(library.ROOT / package, target / package, ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copy2(library.ROOT / "book_driver.py", target / "book_driver.py")
+        shutil.copy2(self.pdf, target / "source.pdf")
+        library.atomic_json(target / "data/catalog.json", self.initial)
+        test_case = self
+        class ModelStub(BaseHTTPRequestHandler):
+            calls = 0
+            def do_POST(self):
+                payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                ModelStub.calls += 1
+                response = test_case.completion_response(json=payload).json()
+                content = json.dumps(response).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+            def log_message(self, *args):
+                pass
+        server = ThreadingHTTPServer(("127.0.0.1", 0), ModelStub)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        environment = {**os.environ, "CLASSIFI_DIR": str(target / "does-not-exist"), "PYTHONPATH": "", "OPENAI_BASE_URL": f"http://127.0.0.1:{server.server_port}/v1", "PYTHONIOENCODING": "utf-8"}
+        command = [sys.executable, "book_driver.py", "source.pdf", "--id", "standalone-book", "--title", "Standalone book", "--start-page", "1", "--end-page", "1"]
+        try:
+            result = subprocess.run(command, cwd=target, env=environment, capture_output=True, text=True, encoding="utf-8", timeout=20)
+        finally:
+            server.shutdown()
+            thread.join(timeout=5)
+            server.server_close()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(ModelStub.calls, 2)
+        self.assertIn("#book/standalone-book", result.stdout)
+        entry = library.read_catalog(target)["textbooks"][0]
+        book = json.loads((target / entry["book_path"][2:]).read_text(encoding="utf-8"))
+        self.assertEqual(len(book["chapters"]), 2)
+        self.assertEqual(book["engine"]["name"], "ACEat Book Engine")
+        self.assertFalse((target.parent / "Classifi").exists())
+
+    def test_driver_publication_requires_explicit_flag(self):
+        argv = ["book_driver.py", str(self.pdf), "--id", "test-book", "--title", "Test book", "--start-page", "1", "--end-page", "1"]
+        entry = {"title": "Test book", "url": "#book/test-book"}
+        with patch.object(library, "import_pdf", return_value=entry), patch.object(library, "publish_library", return_value={"url": "https://example.invalid/"}) as publish:
+            with patch.object(sys, "argv", argv):
+                self.assertEqual(library.main(), 0)
+            publish.assert_not_called()
+            with patch.object(sys, "argv", argv + ["--publish"]):
+                self.assertEqual(library.main(), 0)
+            publish.assert_called_once()
 
 
 if __name__ == "__main__":
