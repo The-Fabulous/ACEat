@@ -1,0 +1,14 @@
+*
+!requirements-chat.txt
+!server.py
+!tutor_graph.py
+!index.html
+!app.js
+!chat.js
+!style.css
+!chat-config.js
+!textbook_engine/
+!textbook_engine/__init__.py
+!textbook_engine/client.py
+!data/
+!data/**
