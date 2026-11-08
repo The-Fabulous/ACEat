@@ -3,20 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ACEat — простая ежедневная практика для подготовки к SAT.">
-  <title>ACEat — твой следующий шаг к SAT</title>
+  <meta name="description" content="ACEat — пространство подготовки к SAT: учебники, помощник по темам, архив экзаменов и задания повышенной сложности.">
+  <meta name="theme-color" content="#f7f7f0">
+  <title>ACEat — пространство подготовки к SAT</title>
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
 <body>
-  <header class="container"><a class="logo" href="#">ACE<span>at</span><i>✳</i></a><nav aria-label="Навигация"><a href="#practice">Практика</a><a href="#plan">Как заниматься</a></nav><a class="small-button" href="#practice">Начать →</a></header>
-  <main class="container">
-    <section class="hero">
-      <div><p class="eyebrow"><span></span> МАЛЕНЬКИЕ ШАГИ. БОЛЬШИЕ РЕЗУЛЬТАТЫ.</p><h1>Твой SAT.<br>Твой <em>новый</em><br>уровень.</h1><p class="intro">Математика, чтение и уверенность в себе.<br>Начни с одного задания — и двигайся дальше.</p><a class="button" href="#practice">Попробовать задание <span>↗</span></a><p class="note">Бесплатно · Без регистрации · В своём темпе</p></div>
-      <div class="hero-art" aria-label="Иллюстрация прогресса в подготовке"><div class="orbit"></div><span class="spark">✳</span><div class="floating">ЕЩЁ ОДИН ШАГ ВПЕРЁД ↗</div><div class="score-card"><p>ТВОЯ ФОРМУЛА УСПЕХА</p><div class="formula">practice<br><span>+</span> consistency<br><span>=</span> <em>progress.</em></div><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><footer>Каждое задание имеет значение <span>↗</span></footer></div><div class="sticker">YOU<br>GOT THIS!</div></div>
-    </section>
-    <section id="practice" class="practice"><div class="section-top"><div><p class="eyebrow">01 / ПРАКТИКА</p><h2>Разомни мозг.</h2></div><p>Один вопрос. Несколько минут.<br>Чуть больше уверенности.</p></div><div class="quiz-layout"><aside><button class="tab active" data-subject="math" aria-pressed="true">Math <span>↗</span></button><button class="tab" data-subject="reading" aria-pressed="false">Reading & Writing <span>↗</span></button><p>Учебные примеры в стиле SAT.<br>Не официальные задания экзамена.</p></aside><article class="question-card"><div class="question-meta"><span id="category">ALGEBRA</span><span id="counter"></span></div><h3 id="question"></h3><div id="answers"></div><p id="feedback" role="status" aria-live="polite"></p><div class="quiz-bottom"><span id="progress">Верных ответов: 0</span><button id="next" class="button" type="button">Следующий вопрос →</button></div></article></div></section>
-    <section id="plan" class="plan"><p class="eyebrow">02 / ТВОЙ РИТМ</p><h2>Не марафон за один вечер.<br>Привычка на каждый день.</h2><div class="steps"><article><span>01</span><h3>Выбери направление</h3><p>Работай с математикой или английским — начни с того, что хочется подтянуть.</p></article><article><span>02</span><h3>Разбери ответ</h3><p>Прочитай объяснение после каждого вопроса. Ошибка — это подсказка, что повторить.</p></article><article><span>03</span><h3>Возвращайся завтра</h3><p>Практикуйся регулярно. Даже короткая сессия помогает сохранить ритм.</p></article></div></section>
-  </main><footer class="container site-footer"><a class="logo" href="#">ACE<span>at</span><i>✳</i></a><p>Большие цели начинаются с маленьких шагов.</p><small>Независимый учебный проект. Не связан с College Board.</small></footer>
+  <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-2 2V11.5a9 9 0 0 1 18 0Z"/><path d="M8 9h8M8 13h5"/></symbol>
+    <symbol id="i-exam" viewBox="0 0 24 24"><path d="M8 4H5v18h14V4h-3M8 2h8v5H8zM8 12h8M8 16h5"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-8l1-7Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/></symbol>
+  </svg>
+  <a class="skip-link" href="#main">К содержимому</a>
+  <header class="topbar">
+    <a class="logo" href="#home" aria-label="ACEat — главная">ACE<span>at</span><i aria-hidden="true">✳</i></a>
+    <span class="topbar-caption">ТВОЁ ПРОСТРАНСТВО ПОДГОТОВКИ</span>
+    <span class="preview-pill"><span></span> Ранняя версия</span>
+  </header>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Разделы платформы">
+      <p class="nav-caption">WORKSPACE / SAT</p>
+      <nav class="navigation">
+        <a href="#home" data-route="home"><svg><use href="#i-grid"/></svg><span>Обзор</span></a>
+        <p class="nav-caption modules-label">ТВОИ МОДУЛИ</p>
+        <a href="#textbooks" data-route="textbooks"><svg><use href="#i-book"/></svg><span>Учебники</span><small>01</small></a>
+        <a href="#chat" data-route="chat"><svg><use href="#i-chat"/></svg><span>ИИ по темам</span><small>02</small></a>
+        <a href="#past-exams" data-route="past-exams"><svg><use href="#i-exam"/></svg><span>Прошлые экзамены</span><small>03</small></a>
+        <a href="#challenge" data-route="challenge"><svg><use href="#i-bolt"/></svg><span>Challenge-экзамены</span><small>04</small></a>
+      </nav>
+      <div class="sidebar-note"><span class="little-star" aria-hidden="true">✳</span><p>Сначала понимание.<br><strong>Потом — новый уровень.</strong></p><span class="small-print">Math · Reading & Writing</span></div>
+      <div class="sidebar-bottom"><span class="online-dot"></span> Шаг за шагом, в своём темпе.</div>
+    </aside>
+    <main id="main" tabindex="-1">
+      <section class="page" id="page-home" data-page="home" aria-labelledby="home-title">
+        <div class="page-kicker"><span>ПОДГОТОВКА К SAT</span><span>ТВОЙ СЛЕДУЮЩИЙ ШАГ ↗</span></div>
+        <div class="home-hero">
+          <div><p class="eyebrow"><span></span> БОЛЬШАЯ ЦЕЛЬ. ПОНЯТНЫЙ ПЛАН.</p><h1 id="home-title">Всё для SAT.<br>В одном <em>месте.</em></h1><p class="hero-description">Разбирай теорию, задавай вопросы и проверяй себя.<br class="desktop-break"> Четыре модуля — один путь вперёд.</p><a href="#textbooks" class="button">Открыть учебники <svg><use href="#i-arrow"/></svg></a></div>
+          <div class="hero-illustration" aria-hidden="true"><div class="orbit"></div><span class="hero-stamp">LEARN. PRACTICE. REPEAT.</span><div class="paper paper-back"></div><div class="paper paper-front"><span class="paper-label">ТВОЯ ФОРМУЛА ПРОГРЕССА</span><div class="paper-formula">understand.<br>practice.<br><span>go further.</span></div><div class="paper-line"></div><div class="paper-footer"><span>ПО ОДНОМУ ШАГУ</span><span>↗</span></div></div><span class="hero-star">✳</span><div class="round-sticker">YOU<br>GOT THIS!</div></div>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">ТВОИ ИНСТРУМЕНТЫ</p><h2>С чего начнём?</h2></div><span class="subtle-label">04 модуля / одна платформа</span></div>
+        <div class="module-grid">
+          <a class="module-card card-lime" href="#textbooks"><div class="card-top"><span class="module-icon"><svg><use href="#i-book"/></svg></span><span class="module-number">01 / LIBRARY</span></div><h3>Сборник учебников</h3><p>Теория, формулы и примеры.<br>База для уверенной подготовки.</p><div class="card-bottom"><span data-count="textbooks">0 учебников</span><span class="arrow-circle">↗</span></div></a>
+          <a class="module-card card-purple" href="#chat"><div class="card-top"><span class="module-icon"><svg><use href="#i-chat"/></svg></span><span class="module-number">02 / AI TUTOR</span></div><h3>ИИ-чат по темам</h3><p>Разбирай сложное по шагам.<br>От вопроса — к пониманию.</p><div class="card-bottom"><span>Демо интерфейса</span><span class="arrow-circle">↗</span></div></a>
+          <a class="module-card card-white" href="#past-exams"><div class="card-top"><span class="module-icon"><svg><use href="#i-exam"/></svg></span><span class="module-number">03 / ARCHIVE</span></div><h3>Прошлые экзамены</h3><p>Архив вариантов и разборов.<br>Знакомься с форматом заданий.</p><div class="card-bottom"><span data-count="pastExams">0 экзаменов</span><span class="arrow-circle">↗</span></div></a>
+          <a class="module-card card-peach" href="#challenge"><div class="card-top"><span class="module-icon"><svg><use href="#i-bolt"/></svg></span><span class="module-number">04 / CHALLENGE</span></div><h3>Сложнее, чем SAT</h3><p>Авторские тренировочные варианты.<br>Для тех, кто хочет пойти дальше.</p><div class="card-bottom"><span>Готовим первые варианты</span><span class="arrow-circle">↗</span></div></a>
+        </div>
+        <div class="release-note"><svg><use href="#i-spark"/></svg><div><strong>Платформа обретает форму.</strong><p>Все четыре раздела уже можно открыть. Учебники и экзамены появятся после проверки материалов, а ИИ-помощник пока работает в демонстрационном режиме.</p></div><span class="version">PREVIEW 01</span></div>
+      </section>
+      <section class="page" id="page-textbooks" data-page="textbooks" aria-labelledby="textbooks-title" hidden>
+        <div class="page-kicker"><span>01 / LIBRARY</span><span>ЗНАНИЯ, К КОТОРЫМ МОЖНО ВЕРНУТЬСЯ</span></div>
+        <div class="module-heading"><div><p class="eyebrow">ТВОЯ БАЗА</p><h1 id="textbooks-title">Сборник <em>учебников.</em></h1><p class="page-description">Соберём теорию, примеры и формулы для подготовки к SAT.</p></div><span class="large-icon lime"><svg><use href="#i-book"/></svg></span></div>
+        <div class="library-toolbar"><label class="search-field"><svg><use href="#i-search"/></svg><input id="book-search" type="search" placeholder="Название учебника или тема" aria-label="Поиск учебников"></label><div class="filter-group" aria-label="Направление учебников"><button type="button" data-book-filter="all" aria-pressed="true">Все</button><button type="button" data-book-filter="math" aria-pressed="false">Math</button><button type="button" data-book-filter="reading" aria-pressed="false">Reading & Writing</button></div></div>
+        <p id="book-count" class="results-label" role="status" aria-live="polite">Загружаем каталог…</p><div id="book-list" class="resource-grid"></div>
+        <div id="books-empty" class="empty-state"><span class="empty-icon"><svg><use href="#i-book"/></svg></span><span class="tiny-label">ЗДЕСЬ НАЧИНАЕТСЯ ПОНИМАНИЕ</span><h2>Место для твоих будущих открытий.</h2><p>Первые учебники ещё готовятся. Здесь появятся обложки, главы и материалы для самостоятельного изучения.</p><span class="outline-badge">Скоро в библиотеке</span></div>
+        <div class="planned-grid"><article><span>01</span><h3>Math</h3><p>Алгебра, работа с данными, геометрия и тригонометрия.</p></article><article><span>02</span><h3>Reading & Writing</h3><p>Работа с текстом, грамматика и письменная речь.</p></article><article><span>03</span><h3>Стратегии подготовки</h3><p>Разбор формата, управление временем и работа над ошибками.</p></article></div>
+      </section>
+      <section class="page" id="page-chat" data-page="chat" aria-labelledby="chat-title" hidden>
+        <div class="page-kicker"><span>02 / AI TUTOR</span><span>СПРАШИВАТЬ — ЧАСТЬ ОБУЧЕНИЯ</span></div>
+        <div class="module-heading"><div><p class="eyebrow">РАЗБЕРЁМСЯ ВМЕСТЕ</p><h1 id="chat-title">Сложное — <em>по шагам.</em></h1><p class="page-description">Выбери тему и посмотри, как будет устроен диалог с помощником.</p></div><span class="outline-badge purple-badge">Демо · ИИ не подключён</span></div>
+        <div class="chat-layout"><aside class="topics-panel"><p class="tiny-label">ВЫБЕРИ ТЕМУ</p><div id="topic-list"></div><p class="topics-note">Примеры ответов подготовлены заранее. Для свободного диалога мы подключим ИИ.</p></aside><div class="chat-panel"><div class="chat-header"><span class="tutor-avatar">✳</span><div><strong>ACEat Tutor</strong><span id="chat-topic-name">Algebra</span></div><button id="clear-chat" class="text-button" type="button">Начать заново</button></div><div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Демонстрация диалога"></div><div class="chat-bottom"><div class="quick-prompts" aria-label="Примеры запросов"><button type="button" data-prompt="explain">Объясни тему</button><button type="button" data-prompt="example">Покажи пример</button><button type="button" data-prompt="mistakes">Частые ошибки</button></div><form id="chat-form" class="chat-form"><label class="sr-only" for="chat-input">Сообщение помощнику</label><input id="chat-input" maxlength="1000" placeholder="Напиши вопрос, чтобы проверить интерфейс…" autocomplete="off"><button type="submit" aria-label="Отправить сообщение"><svg><use href="#i-arrow"/></svg></button></form><p class="chat-disclaimer">Демонстрационный чат: сообщения не отправляются на сервер.</p></div></div></div>
+      </section>
+      <section class="page" id="page-past-exams" data-page="past-exams" aria-labelledby="past-title" hidden>
+        <div class="page-kicker"><span>03 / ARCHIVE</span><span>ПОЗНАКОМЬСЯ С ФОРМАТОМ</span></div>
+        <div class="module-heading"><div><p class="eyebrow">ПРАКТИКА С КОНТЕКСТОМ</p><h1 id="past-title">Прошлые <em>экзамены.</em></h1><p class="page-description">Архив опубликованных экзаменационных материалов с источниками и разборами.</p></div><span class="large-icon neutral"><svg><use href="#i-exam"/></svg></span></div>
+        <div class="archive-toolbar"><span class="outline-badge">Архив готовится</span><p id="past-count" class="results-label" role="status">0 вариантов</p></div><div id="past-list" class="resource-grid"></div><div id="past-empty" class="empty-state"><span class="empty-icon"><svg><use href="#i-exam"/></svg></span><span class="tiny-label">БОЛЬШЕ ПРАКТИКИ. МЕНЬШЕ НЕИЗВЕСТНОСТИ.</span><h2>Первые варианты ещё впереди.</h2><p>Здесь будут дата, формат, источник и разбор каждого варианта.<br class="desktop-break"> Сейчас в архиве нет загруженных экзаменов.</p><a class="button secondary" href="https://satsuite.collegeboard.org/practice" target="_blank" rel="noopener noreferrer">Официальная практика College Board <span aria-hidden="true">↗</span></a></div>
+        <div class="info-strip"><svg><use href="#i-book"/></svg><p>Прошлые экзамены и авторские тренировки будут храниться отдельно. У каждого материала будет указан его источник и тип.</p></div>
+      </section>
+      <section class="page" id="page-challenge" data-page="challenge" aria-labelledby="challenge-title" hidden>
+        <div class="page-kicker"><span>04 / CHALLENGE</span><span>ЕЩЁ ОДИН УРОВЕНЬ ВВЕРХ</span></div>
+        <div class="module-heading"><div><p class="eyebrow">ВЫХОДИ ЗА ПРИВЫЧНОЕ</p><h1 id="challenge-title">Готов к <em>большему?</em></h1><p class="page-description">Авторские экзамены с заданиями, которые планируем сделать сложнее SAT.</p></div><span class="large-icon peach"><svg><use href="#i-bolt"/></svg></span></div>
+        <div class="challenge-banner"><span class="challenge-mark" aria-hidden="true">↗</span><div><span class="tiny-label">СЛОЖНЕЕ В ТРЕНИРОВКЕ — УВЕРЕННЕЕ НА СТАРТЕ</span><h2>Проверяй глубину понимания.</h2><p>Больше шагов в решении, непривычные формулировки и сочетания тем. Сложность первых вариантов ещё предстоит проверить с преподавателем.</p></div><span class="challenge-label">BEYOND<br>THE TEST.</span></div>
+        <div id="challenge-list" class="resource-grid"></div><div id="challenge-empty" class="planned-grid challenge-slots"><article><span class="slot-status">В РАЗРАБОТКЕ</span><h3>Math Challenge</h3><p>Многошаговые задачи и нестандартные связи между темами.</p><div class="slot-footer">Первый вариант готовится <span>01</span></div></article><article><span class="slot-status">В РАЗРАБОТКЕ</span><h3>Reading & Writing Challenge</h3><p>Плотные тексты, тонкие различия и внимательная работа с аргументами.</p><div class="slot-footer">Первый вариант готовится <span>02</span></div></article><article><span class="slot-status">В РАЗРАБОТКЕ</span><h3>Mixed Challenge</h3><p>Смешанная практика по нескольким направлениям.</p><div class="slot-footer">Формат готовится <span>03</span></div></article></div>
+        <div class="info-strip"><svg><use href="#i-bolt"/></svg><p>Авторские варианты ACEat — самостоятельные учебные материалы. Их результаты не являются официальным баллом SAT.</p></div>
+      </section>
+      <noscript><div class="release-note">Для переключения модулей включите JavaScript в браузере. Содержимое платформы пока находится на этапе подготовки.</div></noscript>
+      <footer class="workspace-footer"><span>ACEat <span aria-hidden="true">✳</span> Маленькие шаги. Большие цели.</span><small>Независимый проект. Не связан с College Board. SAT — товарный знак College Board.</small></footer>
+    </main>
+  </div>
 </body>
 </html>
