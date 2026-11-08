@@ -5,7 +5,7 @@ from typing import Any
 import pymupdf
 
 
-CHAPTER_NUMBER_PATTERN = re.compile(r"^\d{1,2}$")
+CHAPTER_NUMBER_PATTERN = re.compile(r"^\d{1,2}[.:]?$")
 
 
 SUBTOPIC_NUMBER_PATTERN = re.compile(r"^\d{1,2}\.\d{1,2}\.?$")
@@ -14,7 +14,7 @@ SUBTOPIC_NUMBER_PATTERN = re.compile(r"^\d{1,2}\.\d{1,2}\.?$")
 APPENDIX_SUBTOPIC_PATTERN = re.compile(r"^[A-Z]\.\d{1,2}\.?$")
 
 
-INLINE_CHAPTER_PATTERN = re.compile(r"^(\d{1,2})\s+(.+)$")
+INLINE_CHAPTER_PATTERN = re.compile(r"^(\d{1,2})[.:]?\s+(.+)$")
 
 
 ROMAN_CHAPTER_PATTERN = re.compile(r"^([IVXLCDM]{1,6})\s+(.+)$")
@@ -39,10 +39,14 @@ def parse_contents_pages(page_texts: list[str]) -> dict[str, list[dict[str, Any]
     current_topic: dict[str, Any] | None = None
 
     lines = [line.strip() for text in page_texts for line in text.splitlines()]
+    marked_numbers = any(re.match(r"^\d{1,2}[.:](?:\s|$)", line) for line in lines)
+    inline_numbers = any(INLINE_CHAPTER_PATTERN.fullmatch(line) for line in lines)
     index = 0
     while index < len(lines):
         line = lines[index]
         inline_chapter = INLINE_CHAPTER_PATTERN.fullmatch(line)
+        if marked_numbers and not re.match(r"^\d{1,2}[.:]\s", line):
+            inline_chapter = None
         roman_chapter = ROMAN_CHAPTER_PATTERN.fullmatch(line)
         inline_subtopic = INLINE_SUBTOPIC_PATTERN.fullmatch(line)
         if inline_chapter:
@@ -63,15 +67,15 @@ def parse_contents_pages(page_texts: list[str]) -> dict[str, list[dict[str, Any]
             title = clean_contents_title(inline_subtopic.group(2))
             number = inline_subtopic.group(1).rstrip(".")
             current_topic["subtopics"].append(f"{number}. {title}")
-        elif CHAPTER_NUMBER_PATTERN.fullmatch(line):
+        elif CHAPTER_NUMBER_PATTERN.fullmatch(line) and (line.endswith((".", ":")) or not (marked_numbers or inline_numbers)):
             title_index = index + 1
             while title_index < len(lines) and not lines[title_index]:
                 title_index += 1
             if title_index < len(lines):
                 title = clean_contents_title(lines[title_index])
-                if title:
+                if title and not re.fullmatch(r"[\d\s.]+", title):
                     current_topic = {
-                        "topic": f"{line}. {title}",
+                        "topic": f"{line.rstrip('.:')}. {title}",
                         "subtopics": [],
                     }
                     topics.append(current_topic)
@@ -109,7 +113,7 @@ def create_book_contents(
                     f"{document.page_count} pages."
                 )
             page_texts = [
-                document[page_number - 1].get_text()
+                document[page_number - 1].get_text(sort=True)
                 for page_number in range(start_page, end_page + 1)
             ]
             return parse_contents_pages(page_texts)

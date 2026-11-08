@@ -97,6 +97,18 @@ class LibraryTests(unittest.TestCase):
                     self.import_book(**changes)
         post.assert_not_called()
 
+    def test_contents_accepts_dotted_and_colon_chapters_without_page_numbers(self):
+        parse = self.engine["extract_book_contents"].parse_contents_pages
+        result = parse(["Contents\nIntroduction 9\n1. Reading 15\n2. Vocabulary 40\n15\n16\n"])
+        self.assertEqual([t["topic"] for t in result["topics"]], ["1. Reading", "2. Vocabulary"])
+        result = parse(["Contents\n1: Sentences\n2: Punctuation\n"])
+        self.assertEqual([t["topic"] for t in result["topics"]], ["1. Sentences", "2. Punctuation"])
+
+    def test_contents_does_not_use_page_numbers_as_split_chapter_titles(self):
+        parse = self.engine["extract_book_contents"].parse_contents_pages
+        result = parse(["Contents\n00\nOverview\n2\n01\nAlgebra\n15\n02\nGeometry\n56"])
+        self.assertEqual([t["topic"] for t in result["topics"]], ["00. Overview", "01. Algebra", "02. Geometry"])
+
     def test_math_page_mode_uses_classifi_source_extraction(self):
         response = MagicMock()
         payload = {"sections": [{"heading": "Solving equations", "paragraphs": ["A new explanation."], "formulas": ["x = 3"], "steps": ["Check the result."], "key_points": []}]}

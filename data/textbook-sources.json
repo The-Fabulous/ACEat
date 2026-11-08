@@ -2,46 +2,49 @@
   "format": "aceat.textbook-sources.v1",
   "sources": [
     {
-      "id": "sat-linear-systems",
-      "publisher": "Avidmock",
-      "title": "Systems of Linear Equations",
-      "url": "https://sat.avidmock.com/downloads/Systems-of-Linear-Equations_ebook.pdf",
-      "sha256": "a97095c56fcff64e25dcc98ff9fb27e875a6063138878fa2437e3afbbf6c173d",
-      "pdf_pages": [
-        2,
-        6
+      "id": "sat-math-complete",
+      "title": "The Complete SAT Mathematics Practice Book",
+      "author": "Eben Roux",
+      "edition": "2026",
+      "url": "https://mathbench.academy/downloads/The-Complete-SAT-Mathematics-Practice-Book.pdf",
+      "pdf_pages": 362,
+      "toc_pdf_pages": [
+        4,
+        4
       ],
-      "mode": "pages",
-      "sections": 7,
-      "note": "Original PDFs are not republished; ACEat contains AI-generated explanations and new examples with editorial corrections."
+      "sha256": "285e264f17c67c4c927e6a3e13fc9ebc1ae70dd527041c1c640845bee73c3b13",
+      "mode": "contents",
+      "chapters": 11
     },
     {
-      "id": "sat-quadratics",
-      "publisher": "Avidmock",
-      "title": "Quadratics: Vertex, Roots & the Discriminant",
-      "url": "https://sat.avidmock.com/downloads/Quadratics-Vertex-Roots-and-Discriminant_ebook.pdf",
-      "sha256": "919c00d0243f5bfcd86248e2ac0dd170fb16da6147a68ea99a7a92a91dc16a1e",
-      "pdf_pages": [
-        2,
-        6
+      "id": "sat-reading-meltzer",
+      "title": "The Critical Reader: The Complete Guide to SAT Reading",
+      "author": "Erica L. Meltzer",
+      "edition": "2nd edition, 2015; pre-digital SAT",
+      "url": "https://testprepshsat.com/file-links/2019/02/The-Critical-Reader-The-Complete-Guide-to-SAT-Reading-2nd-Ed.pdf",
+      "pdf_pages": 358,
+      "toc_pdf_pages": [
+        7,
+        10
       ],
-      "mode": "pages",
-      "sections": 7,
-      "note": "Original PDFs are not republished; ACEat contains AI-generated explanations and new examples with editorial corrections."
+      "sha256": "03731287f659dec93e98178b4b8ec658583cd3180a989a404cf64ff2184ee3f3",
+      "mode": "contents",
+      "chapters": 14
     },
     {
-      "id": "sat-trigonometry",
-      "publisher": "Avidmock",
-      "title": "Right Triangle Trigonometry",
-      "url": "https://sat.avidmock.com/downloads/Right-Triangle-Trigonometry_ebook.pdf",
-      "sha256": "7939ddaccac45eac8df4115afa6ab93414017e89571872294ab53e536f023194",
-      "pdf_pages": [
-        2,
-        6
+      "id": "sat-grammar-meltzer",
+      "title": "The Ultimate Guide to SAT Grammar",
+      "author": "Erica L. Meltzer",
+      "edition": "copyright 2011–2017; pre-digital SAT",
+      "url": "https://www.americaneduforce.edu.vn/wp-content/uploads/2024/10/SAT-grammar-Erica.pdf",
+      "pdf_pages": 441,
+      "toc_pdf_pages": [
+        6,
+        7
       ],
-      "mode": "pages",
-      "sections": 10,
-      "note": "Original PDFs are not republished; ACEat contains AI-generated explanations and new examples with editorial corrections."
+      "sha256": "f670206fd68fc7846066da8a3edd97dc09462ecb51ae918e2b06eaae519335e9",
+      "mode": "contents",
+      "chapters": 19
     }
   ]
 }

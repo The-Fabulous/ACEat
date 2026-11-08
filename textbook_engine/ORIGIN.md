@@ -23,3 +23,7 @@ uncached chapters need generation. Visitors read prepared JSON in the textbook
 collection.
 
 Source repository: https://github.com/The-Fabulous/Classifi
+
+ACEat contents compatibility fix: dotted/colon chapter numbers and visually
+ordered PDF contents extraction; page-number-only lines are not chapter titles.
+Generation logic and the existing contents/pages modes are unchanged.
