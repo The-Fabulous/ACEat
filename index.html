@@ -39,6 +39,7 @@
       </nav>
       <div class="sidebar-note"><span class="little-star" aria-hidden="true">✳</span><p>Сначала понимание.<br><strong>Потом — новый уровень.</strong></p><span class="small-print">Math · Reading & Writing</span></div>
       <div class="sidebar-bottom"><span class="online-dot"></span> Шаг за шагом, в своём темпе.</div>
+      <a class="editor-link" href="manage.html">Управление учебниками ↗</a>
     </aside>
     <main id="main" tabindex="-1">
       <section class="page" id="page-home" data-page="home" aria-labelledby="home-title">
@@ -63,6 +64,13 @@
         <p id="book-count" class="results-label" role="status" aria-live="polite">Загружаем каталог…</p><div id="book-list" class="resource-grid"></div>
         <div id="books-empty" class="empty-state"><span class="empty-icon"><svg><use href="#i-book"/></svg></span><span class="tiny-label">ЗДЕСЬ НАЧИНАЕТСЯ ПОНИМАНИЕ</span><h2>Место для твоих будущих открытий.</h2><p>Первые учебники ещё готовятся. Здесь появятся обложки, главы и материалы для самостоятельного изучения.</p><span class="outline-badge">Скоро в библиотеке</span></div>
         <div class="planned-grid"><article><span>01</span><h3>Math</h3><p>Алгебра, работа с данными, геометрия и тригонометрия.</p></article><article><span>02</span><h3>Reading & Writing</h3><p>Работа с текстом, грамматика и письменная речь.</p></article><article><span>03</span><h3>Стратегии подготовки</h3><p>Разбор формата, управление временем и работа над ошибками.</p></article></div>
+      </section>
+      <section class="page" id="page-book" data-page="book" aria-labelledby="reader-title" hidden>
+        <div class="page-kicker"><a href="#textbooks">← Все учебники</a><span>ACEat / LIBRARY</span></div>
+        <div class="module-heading"><div><p id="reader-meta" class="eyebrow">УЧЕБНЫЙ МАТЕРИАЛ</p><h1 id="reader-title">Открываем учебник…</h1><p id="reader-overview" class="page-description"></p></div></div>
+        <p id="reader-status" class="info-strip" role="status" aria-live="polite">Загружаем главы…</p>
+        <div id="reader-layout" class="reader-layout" hidden><nav id="reader-toc" class="reader-toc" aria-label="Главы учебника"></nav><article id="reader-content" class="reader-content"></article></div>
+        <p id="reader-source" class="editor-help"></p>
       </section>
       <section class="page" id="page-chat" data-page="chat" aria-labelledby="chat-title" hidden>
         <div class="page-kicker"><span>02 / AI TUTOR</span><span>СПРАШИВАТЬ — ЧАСТЬ ОБУЧЕНИЯ</span></div>

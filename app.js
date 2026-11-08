@@ -3,21 +3,26 @@
 const routes = ['home', 'textbooks', 'chat', 'past-exams', 'challenge'];
 const routeTitles = { home: 'Пространство подготовки к SAT', textbooks: 'Учебники', chat: 'ИИ по темам', 'past-exams': 'Прошлые экзамены', challenge: 'Challenge-экзамены' };
 let routeInitialized = false;
+let resolveCatalog;
+const catalogReady = new Promise(resolve => { resolveCatalog = resolve; });
+const loadedBooks = new Map();
 function showRoute() {
   const requested = location.hash.slice(1);
   // The skip link targets main without changing the currently selected module.
   if (requested === 'main') { document.getElementById('main').focus(); return; }
-  const route = routes.includes(requested) ? requested : 'home';
-  if (requested && route !== requested) history.replaceState(null, '', '#home');
+  const bookRoute = /^book\/([a-z][a-z0-9-]{0,63})(?:\/(\d+))?$/.exec(requested);
+  const route = bookRoute ? 'book' : routes.includes(requested) ? requested : 'home';
+  if (requested && route !== requested && !bookRoute) history.replaceState(null, '', '#home');
   document.querySelectorAll('[data-page]').forEach(page => { page.hidden = page.dataset.page !== route; });
   document.querySelectorAll('[data-route]').forEach(link => {
-    const active = link.dataset.route === route;
+    const active = link.dataset.route === (route === 'book' ? 'textbooks' : route);
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
-  document.title = `ACEat — ${routeTitles[route]}`;
+  document.title = `ACEat — ${routeTitles[route] || 'Учебник'}`;
   if (routeInitialized) { document.getElementById('main').focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
   routeInitialized = true;
+  if (bookRoute) openBook(bookRoute[1], Number(bookRoute[2] || 0), requested);
 }
 window.addEventListener('hashchange', showRoute);
 showRoute();
@@ -92,8 +97,11 @@ function resourceCard(item, kind) {
   const title = document.createElement('h3'); title.textContent = item.title;
   const description = document.createElement('p'); description.textContent = item.description || '';
   card.append(meta, title, description);
+  if (item.format === 'classifi' && Number.isInteger(item.chapter_count)) {
+    const count = document.createElement('span'); count.className = 'outline-badge'; count.textContent = `Глав: ${item.chapter_count}`; card.append(count);
+  }
   if (item.source) { const source = document.createElement('p'); source.textContent = `Источник: ${item.source}`; card.append(source); }
-  const url = safeResourceUrl(item.url);
+  const url = item.format === 'classifi' && /^[a-z][a-z0-9-]{0,63}$/.test(item.id) ? new URL(`#book/${item.id}`, location.href) : safeResourceUrl(item.url);
   if (url) {
     const link = document.createElement('a'); link.href = url.href; link.textContent = kind === 'textbooks' ? 'Открыть учебник ↗' : 'Открыть вариант ↗';
     if (url.origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
@@ -130,5 +138,80 @@ async function loadCatalog() {
   document.getElementById('challenge-list').replaceChildren(...catalog.challengeExams.map(item => resourceCard(item, 'challengeExams')));
   document.getElementById('challenge-empty').hidden = catalog.challengeExams.length > 0;
   if (catalogFailed) { document.querySelector('#past-empty h2').textContent = 'Архив временно недоступен.'; document.querySelector('#past-empty p').textContent = 'Не удалось загрузить каталог. Проверь соединение и обнови страницу.'; }
+  resolveCatalog();
 }
 loadCatalog();
+
+function validateBook(book, id) {
+  if (!book || book.format !== 'aceat.classifi-book.v1' || book.id !== id || typeof book.title !== 'string' || !Array.isArray(book.chapters) || !book.chapters.length) throw new Error('Учебник имеет некорректный формат.');
+  for (const chapter of book.chapters) {
+    if (!chapter || typeof chapter.title !== 'string' || !Array.isArray(chapter.sections) || !chapter.sections.length) throw new Error('В учебнике повреждена глава.');
+    for (const section of chapter.sections) {
+      if (!section || typeof section.heading !== 'string' || ['paragraphs', 'formulas', 'steps', 'key_points'].some(key => !Array.isArray(section[key]) || section[key].some(text => typeof text !== 'string'))) throw new Error('В учебнике повреждён раздел.');
+    }
+  }
+}
+let mathReady;
+function loadMath() {
+  if (!mathReady) mathReady = new Promise((resolve, reject) => {
+    window.MathJax = { loader: { load: ['ui/safe'] }, tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], safeOptions: { allow: { URLs: 'none', classes: 'none', cssIDs: 'none', styles: 'none' } } } };
+    const script = document.createElement('script'); script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js'; script.async = true;
+    script.onload = () => window.MathJax.startup.promise.then(resolve, reject); script.onerror = reject; document.head.append(script);
+  });
+  return mathReady;
+}
+function addText(parent, tag, text, className) {
+  const element = document.createElement(tag); element.textContent = text; if (className) element.className = className; parent.append(element); return element;
+}
+async function openBook(id, chapterIndex, route) {
+  const state = document.getElementById('reader-status');
+  document.getElementById('reader-title').textContent = 'Открываем учебник…';
+  document.getElementById('reader-overview').textContent = '';
+  document.getElementById('reader-source').textContent = '';
+  document.getElementById('reader-layout').hidden = true;
+  state.hidden = false; state.textContent = 'Загружаем главы…';
+  await catalogReady;
+  try {
+    if (catalogFailed) throw new Error('Каталог недоступен. Обнови страницу, чтобы повторить загрузку.');
+    const entry = catalog.textbooks.find(item => item.id === id && item.format === 'classifi');
+    if (!entry) throw new Error('Учебник не найден в сборнике.');
+    if (!/^\.\/data\/books\/[a-z][a-z0-9-]{0,63}-[a-f0-9]{12}\.json$/.test(entry.book_path || '')) throw new Error('Некорректный адрес учебника.');
+    let book = loadedBooks.get(id);
+    if (!book) {
+      const response = await fetch(entry.book_path); if (!response.ok) throw new Error('Не удалось загрузить учебник. Попробуй обновить страницу.');
+      book = await response.json(); validateBook(book, id); loadedBooks.set(id, book);
+    }
+    if (location.hash.slice(1) !== route) return;
+    if (chapterIndex >= book.chapters.length) throw new Error('Такой главы нет. Вернись к учебнику из сборника.');
+    document.getElementById('reader-title').textContent = book.title;
+    document.getElementById('reader-overview').textContent = book.overview || '';
+    document.getElementById('reader-meta').textContent = [book.subject === 'reading' ? 'READING & WRITING' : book.subject === 'math' ? 'MATH' : 'SAT', book.author, `Глав: ${book.chapters.length}`].filter(Boolean).join(' / ');
+    document.title = `ACEat — ${book.title}`;
+    const toc = document.getElementById('reader-toc'); toc.replaceChildren();
+    addText(toc, 'p', 'СОДЕРЖАНИЕ', 'tiny-label');
+    book.chapters.forEach((chapter, index) => { const link = addText(toc, 'a', `${String(index + 1).padStart(2, '0')}  ${chapter.title}`); link.href = `#book/${id}/${index}`; if (index === chapterIndex) link.setAttribute('aria-current', 'page'); });
+    const body = document.getElementById('reader-content'); body.replaceChildren();
+    const chapter = book.chapters[chapterIndex];
+    addText(body, 'span', `ГЛАВА ${chapterIndex + 1} / ${book.chapters.length}`, 'tiny-label');
+    addText(body, 'h2', chapter.title);
+    if (chapter.overview) addText(body, 'p', chapter.overview, 'chapter-overview');
+    chapter.sections.forEach(section => {
+      const block = document.createElement('section'); addText(block, 'h3', section.heading);
+      section.paragraphs.forEach(text => addText(block, 'p', text));
+      section.formulas.forEach(text => { const value = text.trim().replace(/^(\$\$?|\\\[|\\\()/, '').replace(/(\$\$?|\\\]|\\\))$/, ''); addText(block, 'div', `\\[${value}\\]`, 'reader-formula'); });
+      if (section.steps.length) { addText(block, 'h4', 'По шагам'); const list = document.createElement('ol'); section.steps.forEach(text => addText(list, 'li', text)); block.append(list); }
+      if (section.key_points.length) { const box = document.createElement('div'); box.className = 'reader-takeaway'; addText(box, 'h4', 'Главное'); const list = document.createElement('ul'); section.key_points.forEach(text => addText(list, 'li', text)); box.append(list); block.append(box); }
+      body.append(block);
+    });
+    const pagination = document.createElement('nav'); pagination.className = 'reader-pagination'; pagination.setAttribute('aria-label', 'Переход между главами');
+    if (chapterIndex > 0) { const link = addText(pagination, 'a', '← Предыдущая глава', 'button secondary'); link.href = `#book/${id}/${chapterIndex - 1}`; }
+    if (chapterIndex + 1 < book.chapters.length) { const link = addText(pagination, 'a', 'Следующая глава →', 'button secondary'); link.href = `#book/${id}/${chapterIndex + 1}`; }
+    body.append(pagination);
+    document.getElementById('reader-source').textContent = `${book.source || ''}. ${book.generation_mode === 'contents' ? 'Учебные объяснения созданы по темам оглавления, а не извлечены из полного текста книги.' : 'Учебные объяснения созданы по выбранным страницам книги.'} Подготовлено с помощью Classifi и ИИ; проверяй важные выводы по источнику.`;
+    state.hidden = true; document.getElementById('reader-layout').hidden = false;
+    if (body.querySelector('.reader-formula') || body.textContent.includes('\\(')) loadMath().then(() => { if (location.hash.slice(1) === route) return window.MathJax.typesetPromise([body]); }).catch(() => { if (location.hash.slice(1) === route) addText(body, 'p', 'Сервис отображения формул недоступен: формулы показаны текстом.', 'editor-help'); });
+  } catch (error) {
+    if (location.hash.slice(1) !== route) return;
+    document.getElementById('reader-title').textContent = 'Учебник недоступен'; state.hidden = false; state.textContent = error.message || 'Не удалось открыть учебник.';
+  }
+}

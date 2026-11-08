@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>ACEat — управление учебниками</title><link rel="stylesheet" href="style.css"><script src="manage.js" defer></script></head>
+<body>
+  <header class="topbar"><a class="logo" href="./#textbooks">ACE<span>at</span><i>✳</i></a><span class="topbar-caption">БИБЛИОТЕКА / CLASSIFI</span><a class="outline-badge" href="./#textbooks">Открыть сборник ↗</a></header>
+  <main class="editor-shell">
+    <p class="eyebrow">ИНСТРУМЕНТЫ КОМАНДЫ</p><h1>Из книги — <em>в библиотеку.</em></h1><p class="page-description">Выбери PDF, подготовь учебные главы через Classifi и проверь результат перед публикацией.</p>
+    <div id="editor-connection" class="info-strip" role="status">Проверяем подключение к локальному движку…</div>
+    <div id="editor-offline" class="editor-notice" hidden><h2>Открой локальную панель</h2><p>Запусти <strong>start-library.cmd</strong> из папки ACEat на своём компьютере. Панель откроется по адресу <strong>http://127.0.0.1:4174/manage.html</strong>.</p><p>GitHub Pages показывает готовые учебники. Обработка PDF выполняется на твоём компьютере через Classifi.</p></div>
+    <div class="editor-grid">
+      <form id="import-form" class="editor-card">
+        <div class="section-heading"><h2>Новый учебник</h2><span class="tiny-label">01 / IMPORT</span></div>
+        <fieldset id="import-fields" disabled>
+          <label class="editor-field upload-field">PDF книги <input id="pdf-file" name="pdf" type="file" accept="application/pdf,.pdf" required><small>До 25 МБ. Нужен текстовый PDF; сканы сначала распознай.</small></label>
+          <label class="editor-field">Название <input name="title" maxlength="160" required placeholder="Например, SAT Math: основы"></label>
+          <div class="editor-row"><label class="editor-field">ID учебника <input name="id" maxlength="64" pattern="[a-z][a-z0-9-]{0,63}" required placeholder="sat-math-foundations"><small>Латиница, цифры и дефисы.</small></label><label class="editor-field">Автор <input name="author" maxlength="160" placeholder="Необязательно"></label></div>
+          <div class="editor-row"><label class="editor-field">Направление <select name="subject"><option value="math">Math</option><option value="reading">Reading & Writing</option><option value="mixed">Общее / смешанное</option></select></label><label class="editor-field">Режим Classifi <select name="mode" id="import-mode"><option value="contents">Оглавление → учебные главы</option><option value="pages">Текст страниц → материал Math</option></select></label></div>
+          <p id="mode-description" class="editor-help">Выбери страницы оглавления: Classifi извлечёт темы и создаст учебные объяснения. Это новые материалы по темам книги, а не полный текст оригинала.</p>
+          <div class="editor-row"><label class="editor-field">Первая страница PDF <input name="start_page" type="number" min="1" value="2" required></label><label class="editor-field">Последняя страница PDF <input name="end_page" type="number" min="1" value="3" required></label></div>
+          <label class="editor-field">Краткое описание <textarea name="description" maxlength="1000" rows="3" placeholder="Что изучит читатель"></textarea></label>
+          <label class="editor-check"><input type="checkbox" name="replace"> Заменить существующий учебник с тем же ID после успешной обработки</label>
+          <p class="editor-help">Оригинальный PDF не публикуется. Для генерации темы или выбранный текст передаются AI-провайдеру из локальной конфигурации Classifi. Публикуй только материалы, которые разрешено размещать открыто.</p>
+          <button class="button" id="import-button" type="submit">Обработать через Classifi ↗</button>
+        </fieldset>
+      </form>
+      <aside class="editor-aside">
+        <section class="editor-card"><span class="tiny-label">02 / REVIEW</span><h2>Ход обработки</h2><p id="import-status" role="status" aria-live="polite">Здесь появятся текущая глава и результат обработки.</p><progress id="import-progress" max="1" value="0" hidden></progress><a id="open-imported" class="button secondary" href="./#textbooks" hidden>Открыть учебник ↗</a><p class="editor-help">Если генерация прервётся, повтори загрузку с теми же настройками. Готовые главы будут взяты из локального кэша.</p></section>
+        <section class="editor-card"><span class="tiny-label">03 / PUBLISH</span><h2>Опубликовать сборник</h2><p>После проверки отправь каталог и готовые главы в репозиторий <strong>The-Fabulous/ACEat</strong>.</p><button id="publish-button" class="button secondary" type="button" disabled>Опубликовать на GitHub Pages ↗</button><p id="publish-status" role="status" aria-live="polite"></p><a id="open-published" href="https://the-fabulous.github.io/ACEat/#textbooks" target="_blank" rel="noopener noreferrer" hidden>Открыть опубликованный сборник ↗</a><p class="editor-help">Изменения станут публичными после сборки GitHub Pages. Нужен доступ к репозиторию через Git на этом компьютере.</p></section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
