@@ -1,0 +1,47 @@
+{
+  "format": "aceat.textbook-sources.v1",
+  "sources": [
+    {
+      "id": "sat-linear-systems",
+      "publisher": "Avidmock",
+      "title": "Systems of Linear Equations",
+      "url": "https://sat.avidmock.com/downloads/Systems-of-Linear-Equations_ebook.pdf",
+      "sha256": "a97095c56fcff64e25dcc98ff9fb27e875a6063138878fa2437e3afbbf6c173d",
+      "pdf_pages": [
+        2,
+        6
+      ],
+      "mode": "pages",
+      "sections": 7,
+      "note": "Original PDFs are not republished; ACEat contains AI-generated explanations and new examples with editorial corrections."
+    },
+    {
+      "id": "sat-quadratics",
+      "publisher": "Avidmock",
+      "title": "Quadratics: Vertex, Roots & the Discriminant",
+      "url": "https://sat.avidmock.com/downloads/Quadratics-Vertex-Roots-and-Discriminant_ebook.pdf",
+      "sha256": "919c00d0243f5bfcd86248e2ac0dd170fb16da6147a68ea99a7a92a91dc16a1e",
+      "pdf_pages": [
+        2,
+        6
+      ],
+      "mode": "pages",
+      "sections": 7,
+      "note": "Original PDFs are not republished; ACEat contains AI-generated explanations and new examples with editorial corrections."
+    },
+    {
+      "id": "sat-trigonometry",
+      "publisher": "Avidmock",
+      "title": "Right Triangle Trigonometry",
+      "url": "https://sat.avidmock.com/downloads/Right-Triangle-Trigonometry_ebook.pdf",
+      "sha256": "7939ddaccac45eac8df4115afa6ab93414017e89571872294ab53e536f023194",
+      "pdf_pages": [
+        2,
+        6
+      ],
+      "mode": "pages",
+      "sections": 10,
+      "note": "Original PDFs are not republished; ACEat contains AI-generated explanations and new examples with editorial corrections."
+    }
+  ]
+}

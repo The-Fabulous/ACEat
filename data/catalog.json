@@ -1,5 +1,45 @@
 {
-  "textbooks": [],
+  "textbooks": [
+    {
+      "id": "sat-linear-systems",
+      "title": "SAT Math: системы линейных уравнений",
+      "author": "ACEat · ИИ-материалы",
+      "subject": "math",
+      "description": "Краткое пособие: методы подстановки и исключения, число решений и задачи с параметрами. Новые ИИ-объяснения и примеры по темам открытого PDF Avidmock. Неофициальный материал ACEat.",
+      "source": "Avidmock — Systems of Linear Equations, страницы PDF 2–6",
+      "chapter_count": 1,
+      "format": "classifi",
+      "book_path": "./data/books/sat-linear-systems-66e482b19d76.json",
+      "url": "#book/sat-linear-systems",
+      "source_url": "https://sat.avidmock.com/downloads/Systems-of-Linear-Equations_ebook.pdf"
+    },
+    {
+      "id": "sat-quadratics",
+      "title": "SAT Math: квадратные уравнения",
+      "author": "ACEat · ИИ-материалы",
+      "subject": "math",
+      "description": "Краткое пособие: формы квадратичной функции, вершина параболы, дискриминант и корни. Новые ИИ-объяснения и примеры по темам открытого PDF Avidmock. Неофициальный материал ACEat.",
+      "source": "Avidmock — Quadratics: Vertex, Roots & the Discriminant, страницы PDF 2–6",
+      "chapter_count": 1,
+      "format": "classifi",
+      "book_path": "./data/books/sat-quadratics-3218f17c6bbd.json",
+      "url": "#book/sat-quadratics",
+      "source_url": "https://sat.avidmock.com/downloads/Quadratics-Vertex-Roots-and-Discriminant_ebook.pdf"
+    },
+    {
+      "id": "sat-trigonometry",
+      "title": "SAT Math: треугольники и тригонометрия",
+      "author": "ACEat · ИИ-материалы",
+      "subject": "math",
+      "description": "Краткое пособие: синус, косинус, тангенс, специальные треугольники, радианы и дуги. Новые ИИ-объяснения и примеры по темам открытого PDF Avidmock. Неофициальный материал ACEat.",
+      "source": "Avidmock — Right Triangle Trigonometry, страницы PDF 2–6",
+      "chapter_count": 1,
+      "format": "classifi",
+      "book_path": "./data/books/sat-trigonometry-de54712b329a.json",
+      "url": "#book/sat-trigonometry",
+      "source_url": "https://sat.avidmock.com/downloads/Right-Triangle-Trigonometry_ebook.pdf"
+    }
+  ],
   "pastExams": [],
   "challengeExams": []
 }

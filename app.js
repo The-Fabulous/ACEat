@@ -208,6 +208,13 @@ async function openBook(id, chapterIndex, route) {
     if (chapterIndex + 1 < book.chapters.length) { const link = addText(pagination, 'a', 'Следующая глава →', 'button secondary'); link.href = `#book/${id}/${chapterIndex + 1}`; }
     body.append(pagination);
     document.getElementById('reader-source').textContent = `${book.source || ''}. ${book.generation_mode === 'contents' ? 'Учебные объяснения созданы по темам оглавления, а не извлечены из полного текста книги.' : 'Учебные объяснения созданы по выбранным страницам книги.'} Учебный материал подготовлен с помощью ИИ; проверяй важные выводы по источнику.`;
+    const sourceUrl = safeResourceUrl(book.source_url);
+    if (sourceUrl) {
+      const source = document.getElementById('reader-source');
+      source.append(document.createTextNode(' '));
+      const link = addText(source, 'a', 'Открыть исходный PDF ↗');
+      link.href = sourceUrl.href; link.target = '_blank'; link.rel = 'noopener noreferrer';
+    }
     state.hidden = true; document.getElementById('reader-layout').hidden = false;
     if (body.querySelector('.reader-formula') || body.textContent.includes('\\(')) loadMath().then(() => { if (location.hash.slice(1) === route) return window.MathJax.typesetPromise([body]); }).catch(() => { if (location.hash.slice(1) === route) addText(body, 'p', 'Сервис отображения формул недоступен: формулы показаны текстом.', 'editor-help'); });
   } catch (error) {
