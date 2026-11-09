@@ -256,6 +256,7 @@
       get('reader-status').hidden = true; get('reader-workspace').hidden = false;
       if (keepTabFocus) get(`book-tab-${view.tab}`).focus({ preventScroll: true });
       if (view.tab === 'pdf') renderPdfTab(); else if (view.chapter === null) renderTopics(view); else renderChapter(view);
+      if (view.chapter !== null && view.tab !== 'pdf') window.ACEatAccount?.trackBook(book.id, view.chapter, view.tab);
       get('reader-source').textContent = `${book.source || ''}. Материалы ACEat подготовлены с помощью ИИ по темам книги. Оригинальное издание доступно во вкладке «PDF книги».`;
     } catch (error) {
       if (token !== opening) return;

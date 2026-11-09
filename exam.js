@@ -69,7 +69,7 @@
 
   const get = id => document.getElementById(id);
   const manifests = new Map();
-  let exam, state, list, page, generation = 0, confirmation;
+  let exam, state, list, page, generation = 0, confirmation, storageOwner, attemptStorageKey;
   let pdfLibrary, pdfTask, renderTask, renderGeneration = 0, zoom = 1;
   const PDF_JS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/';
   function releasePaper() {
@@ -121,10 +121,13 @@
       }
     }
   }
-  function storageKey() { return `aceat:exam:${exam.id}:v${exam.revision}`; }
+  function storageKey() { return attemptStorageKey; }
   function save() {
+    if (!exam || storageOwner !== (window.ACEatAccount?.identity() || null)) return;
+    state.updatedAt = new Date().toISOString();
     try { localStorage.setItem(storageKey(), JSON.stringify(state)); get('exam-save-status').textContent = 'Прогресс сохранён в этом браузере'; }
     catch { get('exam-save-status').textContent = 'Браузер блокирует сохранение. Прогресс доступен до закрытия страницы.'; }
+    window.ACEatAccount?.saveExam(exam, state);
   }
   function setPage(next) {
     const value = Math.min(exam.page_count, Math.max(1, next));
@@ -267,8 +270,11 @@
         if (!response.ok) throw new Error('Не удалось загрузить вариант. Проверь соединение и обнови страницу.');
         data = validate(await response.json(), id); manifests.set(id, data);
       }
+      await window.ACEatAccount?.ready;
       if (token !== generation || location.hash !== `#exam/${id}`) return;
       exam = data; list = questions(exam);
+      storageOwner = window.ACEatAccount?.identity() || null;
+      attemptStorageKey = window.ACEatAccount?.examStorageKey(exam) || `aceat:exam:${exam.id}:v${exam.revision}`;
       let saved; try { saved = JSON.parse(localStorage.getItem(storageKey())); } catch { saved = null; }
       state = restore(exam, saved);
       get('exam-title').textContent = exam.title; document.title = `ACEat — ${exam.title}`;
@@ -283,6 +289,10 @@
     }
   }
   window.ACEatExams = { open, leave };
+  for (const event of ['aceat:identity-changed', 'aceat:cloud-refreshed']) window.addEventListener(event, () => {
+    const active = /^#exam\/([a-z][a-z0-9-]{0,63})$/.exec(location.hash);
+    if (active) open(active[1]);
+  });
   const route = /^#exam\/([a-z][a-z0-9-]{0,63})$/.exec(location.hash);
   if (route) open(route[1]);
 })();

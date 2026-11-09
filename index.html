@@ -9,10 +9,13 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="exam.css?v=1">
   <link rel="stylesheet" href="library.css?v=1">
+  <link rel="stylesheet" href="account.css?v=1">
   <script src="chat-config.js?v=cloud-1" defer></script>
-  <script src="app.js?v=library-1" defer></script>
-  <script src="library.js?v=1" defer></script>
-  <script src="exam.js?v=1" defer></script>
+  <script src="auth-config.js" defer></script>
+  <script src="app.js?v=account-1" defer></script>
+  <script src="account.js?v=1" defer></script>
+  <script src="library.js?v=account-1" defer></script>
+  <script src="exam.js?v=account-1" defer></script>
   <script src="chat.js" defer></script>
 </head>
 <body>
@@ -30,13 +33,14 @@
   <header class="topbar">
     <a class="logo" href="#home" aria-label="ACEat — главная">ACE<span>at</span><i aria-hidden="true">✳</i></a>
     <span class="topbar-caption">ТВОЁ ПРОСТРАНСТВО ПОДГОТОВКИ</span>
-    <span class="preview-pill"><span></span> Ранняя версия</span>
+    <div class="topbar-actions"><span class="preview-pill"><span></span> Ранняя версия</span><a id="account-link" class="account-link" href="#account">Войти</a></div>
   </header>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Разделы платформы">
       <p class="nav-caption">WORKSPACE / SAT</p>
       <nav class="navigation">
         <a href="#home" data-route="home"><svg><use href="#i-grid"/></svg><span>Обзор</span></a>
+        <a href="#account" data-route="account"><svg><use href="#i-spark"/></svg><span>Личный кабинет</span></a>
         <p class="nav-caption modules-label">ТВОИ МОДУЛИ</p>
         <a href="#textbooks" data-route="textbooks"><svg><use href="#i-book"/></svg><span>Учебники</span><small>01</small></a>
         <a href="#chat" data-route="chat"><svg><use href="#i-chat"/></svg><span>ИИ по темам</span><small>02</small></a>
@@ -132,7 +136,32 @@
         <div id="challenge-list" class="resource-grid"></div><div id="challenge-empty" class="planned-grid challenge-slots"><article><span class="slot-status">В РАЗРАБОТКЕ</span><h3>Math Challenge</h3><p>Многошаговые задачи и нестандартные связи между темами.</p><div class="slot-footer">Первый вариант готовится <span>01</span></div></article><article><span class="slot-status">В РАЗРАБОТКЕ</span><h3>Reading & Writing Challenge</h3><p>Плотные тексты, тонкие различия и внимательная работа с аргументами.</p><div class="slot-footer">Первый вариант готовится <span>02</span></div></article><article><span class="slot-status">В РАЗРАБОТКЕ</span><h3>Mixed Challenge</h3><p>Смешанная практика по нескольким направлениям.</p><div class="slot-footer">Формат готовится <span>03</span></div></article></div>
         <div class="info-strip"><svg><use href="#i-bolt"/></svg><p>Авторские варианты ACEat — самостоятельные учебные материалы. Их результаты не являются официальным баллом SAT.</p></div>
       </section>
-      <noscript><div class="release-note">Для переключения модулей включите JavaScript в браузере. Содержимое платформы пока находится на этапе подготовки.</div></noscript>
+      <section class="page" id="page-account" data-page="account" aria-labelledby="account-title" hidden>
+        <div class="page-kicker"><span>ТВОЙ КАБИНЕТ</span><span>ШАГ ЗА ШАГОМ К ЦЕЛИ</span></div>
+        <div class="module-heading"><div><p class="eyebrow">ПОДГОТОВКА С ПРОДОЛЖЕНИЕМ</p><h1 id="account-title">Твой <em>прогресс.</em></h1><p class="page-description">Учебники, попытки и цель по SAT — в одном аккаунте.</p></div></div>
+        <p id="account-message" class="account-message" role="status" hidden></p>
+        <div id="account-auth" class="account-auth-layout">
+          <div class="account-welcome"><span class="tiny-label">YOUR NEXT CHAPTER</span><h2>Продолжай<br>с того же <em>места.</em></h2><p>Сохраняй ответы на варианты и возвращайся к последней подтеме учебника с другого устройства.</p><div class="account-welcome-star" aria-hidden="true">✳</div><a href="#textbooks">А пока можно открыть учебники →</a></div>
+          <div class="account-form-card"><div id="account-auth-tabs" class="account-auth-tabs"><button id="account-login-tab" type="button" aria-pressed="true">Вход</button><button id="account-signup-tab" type="button" aria-pressed="false">Регистрация</button></div><h2 id="account-auth-title">С возвращением.</h2>
+            <form id="account-auth-form" class="account-form">
+              <label id="account-name-wrap" hidden>Как тебя зовут<input id="account-name" name="name" autocomplete="nickname" maxlength="80" disabled></label>
+              <label id="account-email-wrap">Почта<input id="account-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></label>
+              <label id="account-password-wrap">Пароль аккаунта<input id="account-password" name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+              <button id="account-submit" class="button" type="submit" disabled>Войти</button>
+            </form><button id="account-forgot" class="account-text-button" type="button">Не помню пароль</button><button id="account-back-login" class="account-text-button" type="button" hidden>← Вернуться ко входу</button><p class="editor-help">При регистрации потребуется подтвердить почту по ссылке из письма.</p>
+          </div>
+        </div>
+        <div id="account-dashboard" hidden>
+          <div class="account-user"><span id="account-avatar" class="account-avatar" aria-hidden="true"></span><div><h2 id="account-greeting"></h2><p id="account-user-email"></p></div><button id="account-signout" class="button secondary" type="button">Выйти</button></div>
+          <div class="account-stats"><article><span class="tiny-label">ЦЕЛЬ ПО SAT</span><strong id="account-goal-value">1400</strong><span>баллов</span></article><article><span class="tiny-label">УЧЕБНИКОВ В РАБОТЕ</span><strong id="account-books-value">0</strong><a href="#textbooks">К библиотеке ↗</a></article><article><span class="tiny-label">ЗАВЕРШЕНО ВАРИАНТОВ</span><strong id="account-exams-value">0</strong><a href="#past-exams">Потренироваться ↗</a></article></div>
+          <div class="account-sync"><p id="account-sync-status" role="status">Загружаем прогресс…</p><button id="account-refresh" class="account-text-button" type="button">Синхронизировать</button></div>
+          <div id="account-import-panel" class="account-import" hidden><div><strong>Занимался без входа?</strong><p>В этом браузере есть гостевой прогресс. Перенести его в твой аккаунт? Уже начатые в аккаунте варианты останутся на месте.</p></div><button id="account-import" class="button secondary" type="button">Перенести прогресс</button></div>
+          <div class="account-workspace"><div><div class="section-heading"><h2>Продолжить чтение</h2><a href="#textbooks">Все учебники ↗</a></div><div id="account-books-list" class="account-resource-list"></div><div class="section-heading"><h2>Мои экзамены</h2><a href="#past-exams">Все варианты ↗</a></div><p class="editor-help">Для каждого варианта сохраняется текущая попытка. При старте заново она заменяется.</p><div id="account-exams-list" class="account-resource-list"></div></div>
+            <aside class="account-form-card account-profile"><p class="tiny-label">ТВОЯ ЦЕЛЬ</p><h2>Куда идём?</h2><form id="account-profile-form" class="account-form"><label>Имя<input id="account-profile-name" name="display-name" autocomplete="nickname" maxlength="80"></label><label>Желаемый балл SAT<input id="account-target" name="target-score" type="number" min="400" max="1600" step="10" required value="1400"></label><button class="button" type="submit">Сохранить</button></form><p class="editor-help">Цель помогает держать курс. Результаты тренировочных вариантов найдёшь рядом.</p></aside>
+          </div>
+        </div>
+      </section>
+      <noscript><div class="release-note">Для переключения модулей включите JavaScript в браузере.</div></noscript>
       <footer class="workspace-footer"><span>ACEat <span aria-hidden="true">✳</span> Маленькие шаги. Большие цели.</span><small>Независимый проект. Не связан с College Board. SAT — товарный знак College Board.</small></footer>
     </main>
   </div>

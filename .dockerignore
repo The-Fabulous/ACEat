@@ -6,6 +6,9 @@
 !book_source.py
 !index.html
 !app.js
+!account.js
+!account.css
+!auth-config.js
 !chat.js
 !exam.js
 !library.js

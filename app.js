@@ -1,7 +1,7 @@
 'use strict';
 
-const routes = ['home', 'textbooks', 'chat', 'past-exams', 'challenge'];
-const routeTitles = { home: 'Пространство подготовки к SAT', textbooks: 'Учебники', chat: 'ИИ по темам', 'past-exams': 'Прошлые экзамены', challenge: 'Challenge-экзамены', exam: 'Практика SAT' };
+const routes = ['home', 'textbooks', 'chat', 'past-exams', 'challenge', 'account'];
+const routeTitles = { home: 'Пространство подготовки к SAT', textbooks: 'Учебники', chat: 'ИИ по темам', 'past-exams': 'Прошлые экзамены', challenge: 'Challenge-экзамены', exam: 'Практика SAT', account: 'Личный кабинет' };
 let routeInitialized = false;
 let resolveCatalog;
 const catalogReady = new Promise(resolve => { resolveCatalog = resolve; });
@@ -12,8 +12,9 @@ function showRoute() {
   if (requested === 'main') { document.getElementById('main').focus(); return; }
   const bookRoute = /^book\/([a-z][a-z0-9-]{0,63})(?:\/(math|english|pdf|\d+))?(?:\/(\d+))?(?:\/(\d+))?$/.exec(requested);
   const examRoute = /^exam\/([a-z][a-z0-9-]{0,63})$/.exec(requested);
-  const route = bookRoute ? 'book' : examRoute ? 'exam' : routes.includes(requested) ? requested : 'home';
-  if (requested && route !== requested && !bookRoute && !examRoute) history.replaceState(null, '', '#home');
+  const authCallback = new URL(location.href).searchParams.has('code') || /^(access_token|error|error_code)=/.test(requested);
+  const route = authCallback ? 'account' : bookRoute ? 'book' : examRoute ? 'exam' : routes.includes(requested) ? requested : 'home';
+  if (requested && route !== requested && !bookRoute && !examRoute && !authCallback) history.replaceState(null, '', '#home');
   document.querySelectorAll('[data-page]').forEach(page => { page.hidden = page.dataset.page !== route; });
   document.querySelectorAll('[data-route]').forEach(link => {
     const active = link.dataset.route === (route === 'book' ? 'textbooks' : route === 'exam' ? 'past-exams' : route);
@@ -26,6 +27,7 @@ function showRoute() {
   routeInitialized = true;
   if (bookRoute) window.ACEatLibrary?.open(requested); else window.ACEatLibrary?.leave();
   if (examRoute) window.ACEatExams?.open(examRoute[1]); else window.ACEatExams?.leave();
+  if (route === 'account') window.ACEatAccount?.open();
 }
 window.addEventListener('hashchange', showRoute);
 showRoute();
