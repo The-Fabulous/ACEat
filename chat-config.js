@@ -1,4 +1,6 @@
 // Public backend URL only. Never put an API key here.
-// For GitHub Pages, set e.g. 'https://aceat-api.example.com'. No trailing /api/chat.
-// Empty means same-origin, for local preview with python server.py.
-window.ACEAT_CHAT_API = '';
+// GitHub Pages uses the HTTPS tunnel. Local preview talks directly to server.py.
+// Temporary Cloudflare URLs change after restarting the tunnel. No /api/chat here.
+window.ACEAT_CHAT_API = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
+  ? ''
+  : 'https://hawaii-near-statement-employ.trycloudflare.com';
