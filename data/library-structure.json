@@ -1,0 +1,24 @@
+{
+  "sat-math-complete": [
+    {"id":"basics","subject":"math","title":"Основы и формат SAT","chapters":[0,8]},
+    {"id":"algebra","subject":"math","title":"Алгебра","chapters":[1,2]},
+    {"id":"advanced","subject":"math","title":"Продвинутая математика","chapters":[3,4,5]},
+    {"id":"data","subject":"math","title":"Данные и вероятность","chapters":[6]},
+    {"id":"geometry","subject":"math","title":"Геометрия и тригонометрия","chapters":[7]},
+    {"id":"practice","subject":"math","title":"Практика и сложные задачи","chapters":[9,10]}
+  ],
+  "sat-reading-meltzer": [
+    {"id":"strategies","subject":"english","title":"Стратегии чтения","chapters":[0,2,3]},
+    {"id":"meaning","subject":"english","title":"Слова и смысл","chapters":[1,5,6]},
+    {"id":"evidence","subject":"english","title":"Аргументация и доказательства","chapters":[4,7]},
+    {"id":"structure","subject":"english","title":"Структура и язык текста","chapters":[8,9,10,11]},
+    {"id":"comparison","subject":"english","title":"Парные тексты и графики","chapters":[12,13]}
+  ],
+  "sat-grammar-meltzer": [
+    {"id":"editing","subject":"english","title":"Редактирование текста","chapters":[0,1,2,3]},
+    {"id":"words","subject":"english","title":"Слова и связи","chapters":[4,7,15]},
+    {"id":"sentences","subject":"english","title":"Предложения и синтаксис","chapters":[5,6,16,17,18]},
+    {"id":"punctuation","subject":"english","title":"Пунктуация","chapters":[8,9,10,11,12]},
+    {"id":"agreement","subject":"english","title":"Согласование и глаголы","chapters":[13,14]}
+  ]
+}

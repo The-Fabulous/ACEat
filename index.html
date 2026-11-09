@@ -8,8 +8,10 @@
   <title>ACEat — пространство подготовки к SAT</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="exam.css?v=1">
+  <link rel="stylesheet" href="library.css?v=1">
   <script src="chat-config.js" defer></script>
-  <script src="app.js?v=exams-1" defer></script>
+  <script src="app.js?v=library-1" defer></script>
+  <script src="library.js?v=1" defer></script>
   <script src="exam.js?v=1" defer></script>
   <script src="chat.js" defer></script>
 </head>
@@ -62,18 +64,28 @@
       </section>
       <section class="page" id="page-textbooks" data-page="textbooks" aria-labelledby="textbooks-title" hidden>
         <div class="page-kicker"><span>01 / LIBRARY</span><span>ЗНАНИЯ, К КОТОРЫМ МОЖНО ВЕРНУТЬСЯ</span></div>
-        <div class="module-heading"><div><p class="eyebrow">ТВОЯ БАЗА</p><h1 id="textbooks-title">Сборник <em>учебников.</em></h1><p class="page-description">Соберём теорию, примеры и формулы для подготовки к SAT.</p></div><span class="large-icon lime"><svg><use href="#i-book"/></svg></span></div>
-        <div class="library-toolbar"><label class="search-field"><svg><use href="#i-search"/></svg><input id="book-search" type="search" placeholder="Название учебника или тема" aria-label="Поиск учебников"></label><div class="filter-group" aria-label="Направление учебников"><button type="button" data-book-filter="all" aria-pressed="true">Все</button><button type="button" data-book-filter="math" aria-pressed="false">Math</button><button type="button" data-book-filter="reading" aria-pressed="false">Reading & Writing</button></div></div>
-        <details class="book-build-guide"><summary>Как добавить учебник</summary><p>Учебник создаётся заранее драйвером из проекта ACEat. После запуска готовые главы автоматически добавляются в этот сборник.</p><ol><li>Помести PDF на свой компьютер и выбери страницы оглавления.</li><li>Из папки ACEat запусти команду ниже, указав свой файл, название и ID.</li><li>Проверь готовый учебник локально. Для публикации повтори команду с <code>--publish</code>.</li></ol><pre><code>.venv\Scripts\python.exe book_driver.py "C:\Books\sat.pdf" --id sat-math --title "SAT Math" --start-page 2 --end-page 4</code></pre><p class="editor-help">Нужны зависимости из requirements-import.txt и ключ AI в локальном .env. Драйвер создаёт материалы по темам оглавления; режим <code>--mode pages</code> обрабатывает текст выбранных страниц Math. Чтение готовых учебников не запускает генерацию.</p></details>
-        <p id="book-count" class="results-label" role="status" aria-live="polite">Загружаем каталог…</p><div id="book-list" class="resource-grid"></div>
+        <div class="module-heading"><div><p class="eyebrow">ТВОЯ БАЗА</p><h1 id="textbooks-title">Сборник <em>учебников.</em></h1><p class="page-description">Выбери книгу, открой нужную тему и разбери её по подтемам. Оригинальный PDF всегда рядом.</p></div><span class="large-icon lime"><svg><use href="#i-book"/></svg></span></div>
+        <div class="library-toolbar"><label class="search-field"><svg><use href="#i-search"/></svg><input id="book-search" type="search" placeholder="Название учебника или тема" aria-label="Поиск учебников"></label><div class="filter-group" aria-label="Направление учебников"><button type="button" data-book-filter="all" aria-pressed="true">Все</button><button type="button" data-book-filter="math" aria-pressed="false">Математика</button><button type="button" data-book-filter="reading" aria-pressed="false">Английский</button></div></div>
+        <p id="book-count" class="results-label" role="status" aria-live="polite">Загружаем каталог…</p><div id="book-list" class="book-shelf"></div>
         <div id="books-empty" class="empty-state"><span class="empty-icon"><svg><use href="#i-book"/></svg></span><span class="tiny-label">ЗДЕСЬ НАЧИНАЕТСЯ ПОНИМАНИЕ</span><h2>Место для твоих будущих открытий.</h2><p>Первые учебники ещё готовятся. Здесь появятся обложки, главы и материалы для самостоятельного изучения.</p><span class="outline-badge">Скоро в библиотеке</span></div>
-        <div class="planned-grid"><article><span>01</span><h3>Math</h3><p>Алгебра, работа с данными, геометрия и тригонометрия.</p></article><article><span>02</span><h3>Reading & Writing</h3><p>Работа с текстом, грамматика и письменная речь.</p></article><article><span>03</span><h3>Стратегии подготовки</h3><p>Разбор формата, управление временем и работа над ошибками.</p></article></div>
+        <details class="book-build-guide"><summary>Как добавить учебник</summary><p>Учебник создаётся заранее драйвером из проекта ACEat. После запуска готовые главы автоматически добавляются в этот сборник.</p><ol><li>Помести PDF на свой компьютер и выбери страницы оглавления.</li><li>Из папки ACEat запусти команду ниже, указав свой файл, название и ID.</li><li>Проверь готовый учебник локально. Для публикации повтори команду с <code>--publish</code>.</li></ol><pre><code>.venv\Scripts\python.exe book_driver.py "C:\Books\sat.pdf" --id sat-math --title "SAT Math" --start-page 2 --end-page 4</code></pre><p class="editor-help">Нужны зависимости из requirements-import.txt и ключ AI в локальном .env. Драйвер создаёт материалы по темам оглавления; режим <code>--mode pages</code> обрабатывает текст выбранных страниц Math. Чтение готовых учебников не запускает генерацию.</p></details>
       </section>
       <section class="page" id="page-book" data-page="book" aria-labelledby="reader-title" hidden>
         <div class="page-kicker"><a href="#textbooks">← Все учебники</a><span>ACEat / LIBRARY</span></div>
-        <div class="module-heading"><div><p id="reader-meta" class="eyebrow">УЧЕБНЫЙ МАТЕРИАЛ</p><h1 id="reader-title">Открываем учебник…</h1><p id="reader-overview" class="page-description"></p></div></div>
+        <div class="book-hero"><div id="reader-cover" class="book-mini-cover" aria-hidden="true"></div><div><p id="reader-meta" class="eyebrow">УЧЕБНЫЙ МАТЕРИАЛ</p><h1 id="reader-title">Открываем учебник…</h1><p id="reader-overview" class="page-description"></p></div></div>
         <p id="reader-status" class="info-strip" role="status" aria-live="polite">Загружаем главы…</p>
-        <div id="reader-layout" class="reader-layout" hidden><nav id="reader-toc" class="reader-toc" aria-label="Главы учебника"></nav><article id="reader-content" class="reader-content"></article></div>
+        <div id="reader-workspace" hidden>
+          <nav id="reader-tabs" class="reader-tabs" role="tablist" aria-label="Разделы учебника"></nav>
+          <section id="reader-panel" role="tabpanel" tabindex="0" aria-label="Содержимое раздела учебника">
+            <div id="reader-topics" class="book-topic-grid"></div>
+            <div id="reader-layout" class="reader-layout" hidden><nav id="reader-toc" class="reader-toc" aria-label="Темы и подтемы учебника"></nav><article id="reader-content" class="reader-content"></article></div>
+            <div id="reader-pdf" hidden>
+              <div class="book-pdf-intro"><div><p class="tiny-label">ОРИГИНАЛЬНОЕ ИЗДАНИЕ</p><h2>Книга целиком, под рукой.</h2><p id="book-pdf-description"></p></div><a id="book-pdf-download" class="button" target="_blank" rel="noopener">Скачать PDF ↓</a></div>
+              <div class="book-pdf-actions"><button id="book-pdf-open" type="button" class="button secondary">Показать PDF</button><a id="book-pdf-source" target="_blank" rel="noopener noreferrer">Открыть у источника ↗</a></div>
+              <div id="book-pdf-viewer" hidden><div class="book-pdf-toolbar"><button id="book-pdf-prev" type="button" aria-label="Предыдущая страница PDF">←</button><label for="book-pdf-page">Страница</label><input id="book-pdf-page" type="number" min="1" value="1"><span id="book-pdf-total"></span><button id="book-pdf-next" type="button" aria-label="Следующая страница PDF">→</button><button id="book-pdf-zoom" type="button">150%</button></div><p id="book-pdf-status" class="editor-help" role="status"></p><div id="book-pdf-viewport" class="book-pdf-viewport"><canvas id="book-pdf-canvas" role="img" aria-label="Страница оригинального учебника"></canvas></div></div>
+            </div>
+          </section>
+        </div>
         <p id="reader-source" class="editor-help"></p>
       </section>
       <section class="page" id="page-chat" data-page="chat" aria-labelledby="chat-title" hidden>

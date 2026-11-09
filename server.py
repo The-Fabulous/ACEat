@@ -5,10 +5,11 @@ import os
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 from textbook_engine.client import LLMRequestError, load_config
 from exam_source import get_paper, PaperSourceError
+from book_source import get_book_pdf, byte_range, BookSourceError
 from tutor_graph import CHAT_GRAPH, MAX_HISTORY_MESSAGES, TOPICS
 
 ROOT = Path(__file__).resolve().parent
@@ -16,7 +17,7 @@ MAX_BODY = 64 * 1024
 CHAT_SLOT = threading.BoundedSemaphore(1)
 ALLOWED_ORIGINS = {"https://the-fabulous.github.io"}
 ALLOWED_ORIGINS.update(origin.strip().rstrip("/") for origin in os.environ.get("CHAT_ALLOWED_ORIGINS", "").split(",") if origin.strip())
-STATIC_FILES = {"index.html", "app.js", "chat.js", "exam.js", "style.css", "exam.css", "chat-config.js"}
+STATIC_FILES = {"index.html", "app.js", "chat.js", "exam.js", "library.js", "style.css", "exam.css", "library.css", "chat-config.js"}
 
 
 def validate_chat(body):
@@ -73,15 +74,17 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
     def do_OPTIONS(self):
-        if urlsplit(self.path).path != "/api/chat":
+        path = urlsplit(self.path).path
+        book_pdf = path.startswith("/api/books/") and path.endswith("/pdf")
+        if path != "/api/chat" and not book_pdf:
             self.send_json(404, {"ok": False, "error": "Не найдено."})
             return
         if not self.allowed_origin():
             self.send_json(403, {"ok": False, "error": "Этот адрес сайта не разрешён."})
             return
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS" if book_pdf else "POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Range" if book_pdf else "Content-Type")
         self.send_header("Content-Length", "0")
         self.end_headers()
 
@@ -89,6 +92,21 @@ class Handler(BaseHTTPRequestHandler):
         path = unquote(urlsplit(self.path).path)
         if path == "/api/health":
             self.send_json(200, {"ok": True, "configured": bool(load_config()["OPENAI_API_KEY"])})
+            return
+        if path.startswith("/api/books/") and path.endswith("/pdf"):
+            if not self.allowed_origin():
+                self.send_json(403, {"ok": False, "error": "Этот адрес сайта не разрешён."})
+                return
+            try:
+                source = get_book_pdf(path[len("/api/books/"):-len("/pdf")])
+            except KeyError:
+                self.send_json(404, {"ok": False, "error": "PDF учебника не найден."})
+                return
+            except BookSourceError:
+                self.send_json(502, {"ok": False, "error": "Оригинальный PDF пока недоступен. Попробуй позже или открой источник."})
+                return
+            download = parse_qs(urlsplit(self.path).query).get("download") == ["1"]
+            self.send_book_file(source, download)
             return
         if path.startswith("/api/papers/"):
             if not self.allowed_origin():
@@ -127,6 +145,39 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+
+    def send_book_file(self, source, download):
+        size = source.stat().st_size
+        header = self.headers.get("Range")
+        try:
+            start, end = byte_range(header, size)
+        except ValueError:
+            self.send_response(416)
+            self.send_header("Content-Range", f"bytes */{size}")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        self.send_response(206 if header else 200)
+        self.send_header("Content-Type", "application/pdf")
+        self.send_header("Content-Length", str(end - start + 1))
+        self.send_header("Accept-Ranges", "bytes")
+        self.send_header("Access-Control-Expose-Headers", "Accept-Ranges, Content-Length, Content-Range")
+        self.send_header("Content-Disposition", f'{"attachment" if download else "inline"}; filename="{source.name}"')
+        if header:
+            self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+        self.end_headers()
+        try:
+            with source.open("rb") as stream:
+                stream.seek(start)
+                remaining = end - start + 1
+                while remaining:
+                    chunk = stream.read(min(64 * 1024, remaining))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    remaining -= len(chunk)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def do_POST(self):
         if urlsplit(self.path).path != "/api/chat":

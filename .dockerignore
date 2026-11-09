@@ -3,12 +3,15 @@
 !server.py
 !tutor_graph.py
 !exam_source.py
+!book_source.py
 !index.html
 !app.js
 !chat.js
 !exam.js
+!library.js
 !style.css
 !exam.css
+!library.css
 !chat-config.js
 !textbook_engine/
 !textbook_engine/__init__.py

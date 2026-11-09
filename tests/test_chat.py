@@ -1,4 +1,6 @@
 import json
+from pathlib import Path
+import tempfile
 import threading
 import unittest
 from http.server import ThreadingHTTPServer
@@ -103,6 +105,26 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(response.content, b"%PDF-test-source")
             source.assert_called_once_with("sat-practice-9")
             graph.assert_not_called()
+
+    def test_textbook_pdf_supports_ranges_downloads_and_pages_cors(self):
+        with tempfile.TemporaryDirectory() as directory:
+            pdf = Path(directory) / "textbook.pdf"; pdf.write_bytes(b"%PDF-0123456789")
+            with patch.object(server, "get_book_pdf", return_value=pdf):
+                url = self.base + "/api/books/sat-math-complete/pdf"
+                origin = {"Origin": "https://the-fabulous.github.io"}
+                response = requests.get(url, headers={**origin, "Range": "bytes=0-3"}, timeout=5)
+                self.assertEqual(response.status_code, 206); self.assertEqual(response.content, b"%PDF")
+                self.assertEqual(response.headers["Content-Range"], "bytes 0-3/15")
+                self.assertEqual(response.headers["Access-Control-Allow-Origin"], origin["Origin"])
+                self.assertIn("Content-Range", response.headers["Access-Control-Expose-Headers"])
+                response = requests.get(url + "?download=1", timeout=5)
+                self.assertEqual(response.content, pdf.read_bytes())
+                self.assertEqual(response.headers["Content-Disposition"], 'attachment; filename="textbook.pdf"')
+                self.assertEqual(requests.get(url, headers={"Range": "bytes=99-"}, timeout=5).status_code, 416)
+                self.assertEqual(requests.get(url, headers={"Origin": "https://unrelated.example"}, timeout=5).status_code, 403)
+                preflight = requests.options(url, headers={**origin, "Access-Control-Request-Method": "GET", "Access-Control-Request-Headers": "range"}, timeout=5)
+                self.assertEqual(preflight.status_code, 204)
+                self.assertIn("Range", preflight.headers["Access-Control-Allow-Headers"])
 
     def test_busy_and_provider_error_do_not_leak_secrets(self):
         with patch.object(server, "load_config", return_value={"OPENAI_API_KEY": "test-only"}):
