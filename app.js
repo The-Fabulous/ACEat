@@ -50,6 +50,15 @@ function resourceCard(item, kind) {
     if (url.origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
     card.append(link);
   } else { const status = document.createElement('span'); status.className = 'outline-badge'; status.textContent = 'Материал готовится'; card.append(status); }
+  if (kind === 'pastExams') {
+    for (const [field, label] of [['answers_url', 'Ответы и объяснения · PDF ↗'], ['scoring_url', 'Подсчёт баллов · PDF ↗']]) {
+      const resourceUrl = safeResourceUrl(item[field]);
+      if (!resourceUrl) continue;
+      const link = document.createElement('a'); link.href = resourceUrl.href; link.textContent = label;
+      if (resourceUrl.origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+      card.append(link);
+    }
+  }
   return card;
 }
 function renderBooks() {

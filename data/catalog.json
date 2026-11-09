@@ -40,6 +40,33 @@
       "source_url": "https://www.americaneduforce.edu.vn/wp-content/uploads/2024/10/SAT-grammar-Erica.pdf"
     }
   ],
-  "pastExams": [],
+  "pastExams": [
+    {
+      "id": "sat-practice-9",
+      "title": "SAT Practice Test 9",
+      "author": "College Board",
+      "subject": "mixed",
+      "type": "official-practice",
+      "description": "Полный официальный тренировочный вариант: Reading & Writing и Math. PDF, 56 страниц. Неадаптивная бумажная версия для подготовки к Digital SAT.",
+      "source": "College Board · SAT Suite of Assessments",
+      "source_url": "https://satsuite.collegeboard.org/practice/practice-tests/paper",
+      "url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-9-digital.pdf",
+      "answers_url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-9-answers-digital.pdf",
+      "scoring_url": "https://satsuite.collegeboard.org/media/pdf/scoring-sat-practice-test-9-digital.pdf"
+    },
+    {
+      "id": "sat-practice-10",
+      "title": "SAT Practice Test 10",
+      "author": "College Board",
+      "subject": "mixed",
+      "type": "official-practice",
+      "description": "Полный официальный тренировочный вариант: Reading & Writing и Math. PDF, 56 страниц. Неадаптивная бумажная версия для подготовки к Digital SAT.",
+      "source": "College Board · SAT Suite of Assessments",
+      "source_url": "https://satsuite.collegeboard.org/practice/practice-tests/paper",
+      "url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-10-digital.pdf",
+      "answers_url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-10-answers-digital.pdf",
+      "scoring_url": "https://satsuite.collegeboard.org/media/pdf/scoring-sat-practice-test-10-digital.pdf"
+    }
+  ],
   "challengeExams": []
 }
