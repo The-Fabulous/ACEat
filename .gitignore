@@ -2,6 +2,7 @@
 Thumbs.db
 .vscode/
 node_modules/
+.vercel/
 .local/
 .venv/
 .env

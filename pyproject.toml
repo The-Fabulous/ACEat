@@ -1,0 +1,12 @@
+[project]
+name = "aceat"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.117.1,<1.0",
+  "langgraph>=1.0,<2.0",
+  "requests>=2.32,<3.0",
+]
+
+[tool.vercel]
+entrypoint = "app:app"

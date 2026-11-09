@@ -1,13 +1,15 @@
 """Verified local cache of the two public College Board source documents."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import tempfile
 import threading
 
 import requests
 
 ROOT = Path(__file__).resolve().parent
-CACHE = ROOT / ".local" / "exam-sources"
+CACHE = (Path(tempfile.gettempdir()) / "aceat" / "exam-sources") if os.environ.get("VERCEL") else ROOT / ".local" / "exam-sources"
 PAPER_IDS = {"sat-practice-9", "sat-practice-10"}
 MAX_PDF_BYTES = 16 * 1024 * 1024
 PAPER_LOCK = threading.Lock()

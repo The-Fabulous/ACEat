@@ -1,14 +1,16 @@
 """Allowlisted, verified textbook originals with streaming-friendly file access."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
+import tempfile
 import threading
 
 import requests
 
 ROOT = Path(__file__).resolve().parent
-CACHE = ROOT / ".local" / "sat-sources"
+CACHE = (Path(tempfile.gettempdir()) / "aceat" / "sat-sources") if os.environ.get("VERCEL") else ROOT / ".local" / "sat-sources"
 BOOK_FILES = {
     "sat-math-complete": "complete-sat-math.pdf",
     "sat-reading-meltzer": "meltzer-sat-reading.pdf",

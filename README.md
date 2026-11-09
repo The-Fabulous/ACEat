@@ -4,6 +4,24 @@
 
 Сайт: https://the-fabulous.github.io/ACEat/
 
+## Полный деплой на Vercel
+
+Vercel запускает `app.py` как FastAPI-приложение: сайт, LangGraph-чат и PDF-эндпоинты работают на одном домене. `pyproject.toml` задаёт Python 3.12 и зависимости; `vercel.json` — пресет FastAPI и максимальную длительность запроса 300 секунд. Сборка и установка зависимостей выполняются в облаке Vercel.
+
+При импорте `The-Fabulous/ACEat` из GitHub выберите:
+
+- **Project Name:** `aceat` (или другое свободное название строчными буквами).
+- **Root Directory:** `./`.
+- **Application Preset:** `FastAPI`.
+- **Build and Output Settings:** стандартные, без ручных переопределений.
+- **Environment Variables:** `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `GEMMA_MODEL` — значения из своего локального `.env` Classifi/ACEat. Значения по умолчанию: `OPENAI_BASE_URL=https://llm.alem.ai/v1`, `GEMMA_MODEL=gemma4`.
+
+После Deploy проверьте `/api/health`: ожидаются `ok: true`, `configured: true`, `runtime: "vercel"`. Затем проверьте чат, прохождение варианта SAT и PDF-вкладку книги. На домене Vercel браузер обращается к собственному `/api`, без localhost и Cloudflare-туннеля.
+
+Оригиналы PDF скачиваются с зарегистрированных источников с проверкой SHA-256 и кэшируются в `/tmp`, доступном для записи в Vercel Functions. Кэш временный: новая функция может заново загрузить оригинал. Учебники отдаются потоком, включая HTTP Range, поэтому большой файл не превращается в один буфер ответа. HTML, CSS, JavaScript и публичные JSON выдаются по разрешённому списку; `.env`, Python-код, служебные папки и SQL не доступны как страницы сайта. `.vercelignore` и `excludeFiles` исключают локальные исходные PDF, виртуальное окружение, кэши и `.env` из деплоя.
+
+`server.py` и `start-aceat.cmd` по-прежнему предназначены для локального запуска. Файлы `auth-config.js` и `supabase/setup.sql`, подготовленные для кабинетов, не заменяют настройку возвратного URL в Supabase: после получения постоянного адреса Vercel используйте его в Authentication → URL Configuration.
+
 ## ИИ-чат: LangGraph, как в Classifi
 
 Граф перенесён из `Classifi/tutor_graph.py` и адаптирован для SAT: определение намерения → объяснение правила (`formula`) или разбор задания (`solve`) → структурированный ответ с шагами и формулами. Один вопрос выполняет два последовательных обращения к модели. Поддерживаются Algebra, Advanced Math, Data Analysis, Geometry & Trig и Reading & Writing. На сервер передаются выбранная тема и последние восемь сообщений; смена темы и «Начать заново» очищают историю. После перезагрузки история не сохраняется.
