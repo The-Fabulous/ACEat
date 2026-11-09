@@ -10,6 +10,8 @@
 !account.css
 !auth-config.js
 !chat.js
+!chat-store.js
+!chat-history.css
 !exam.js
 !library.js
 !style.css

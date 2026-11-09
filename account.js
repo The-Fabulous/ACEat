@@ -176,6 +176,7 @@
     if (same && event !== 'PASSWORD_RECOVERY' && event !== 'INITIAL_SESSION') return;
     const token = ++epoch; user = session?.user || null; profile = user ? read(`${namespace(user.id)}:profile`) : null; profileDirty = false; syncAvailable = false;
     clearTimeout(pendingTimer); pending.clear(); render();
+    window.dispatchEvent(new CustomEvent('aceat:identity-changing'));
     if (user) { try { await loadCloud(token); } catch { if (token === epoch) syncMessage('Прогресс сохранён в этом браузере. Облачная синхронизация временно недоступна.'); } }
     if (token !== epoch) return;
     render(); window.dispatchEvent(new CustomEvent('aceat:identity-changed'));
@@ -234,7 +235,25 @@
     }
     write(bookKey(), own); write(`${namespace(user.id)}:guest-imported`, true); renderDashboard(); message('Прогресс из этого браузера перенесён в кабинет.');
   });
-  window.ACEatAccount = { ready, open: render, identity: () => user?.id || null, examStorageKey: exam => examKey(user?.id, exam), saveExam, trackBook, isSignedIn: () => Boolean(user), isSynced: () => syncAvailable };
+  async function fetchChatPage(owner, topic, cursor) {
+    if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
+    let query = client.from('aceat_chat_messages').select('id,conversation_id,topic,role,content,answer,created_at')
+      .eq('user_id', owner).eq('topic', topic).order('created_at', { ascending: false }).order('id', { ascending: false }).limit(100);
+    if (cursor) {
+      if (!/^[0-9a-f-]{36}$/i.test(cursor.id) || !stamp(cursor.created_at)) throw new Error('Invalid chat cursor');
+      const time = new Date(cursor.created_at).toISOString();
+      query = query.or(`created_at.lt.${time},and(created_at.eq.${time},id.lt.${cursor.id})`);
+    }
+    const result = await query;
+    if (result.error) throw result.error;
+    return result.data;
+  }
+  async function pushChatMessages(owner, rows) {
+    if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
+    const result = await client.from('aceat_chat_messages').upsert(rows.map(row => ({ ...row, user_id: owner })), { onConflict: 'user_id,id', ignoreDuplicates: true });
+    if (result.error) throw result.error;
+  }
+  window.ACEatAccount = { ready, open: render, identity: () => user?.id || null, examStorageKey: exam => examKey(user?.id, exam), saveExam, trackBook, fetchChatPage, pushChatMessages, isSignedIn: () => Boolean(user), isSynced: () => syncAvailable };
   render(); catalogReady.then(() => { if (user) renderDashboard(); });
   (async () => {
     try {
