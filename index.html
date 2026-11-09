@@ -7,8 +7,10 @@
   <meta name="theme-color" content="#f7f7f0">
   <title>ACEat — пространство подготовки к SAT</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="exam.css?v=1">
   <script src="chat-config.js" defer></script>
-  <script src="app.js" defer></script>
+  <script src="app.js?v=exams-1" defer></script>
+  <script src="exam.js?v=1" defer></script>
   <script src="chat.js" defer></script>
 </head>
 <body>
@@ -78,6 +80,32 @@
         <div class="page-kicker"><span>02 / AI TUTOR</span><span>СПРАШИВАТЬ — ЧАСТЬ ОБУЧЕНИЯ</span></div>
         <div class="module-heading"><div><p class="eyebrow">РАЗБЕРЁМСЯ ВМЕСТЕ</p><h1 id="chat-title">Сложное — <em>по шагам.</em></h1><p class="page-description">Выбери тему, задай вопрос и разбери решение вместе с ИИ.</p></div><span id="chat-status" class="outline-badge purple-badge" role="status">ИИ по темам</span></div>
         <div class="chat-layout"><aside class="topics-panel"><p class="tiny-label">ВЫБЕРИ ТЕМУ</p><div id="topic-list"></div><p class="topics-note">Обсуждай правила, задачи и свои решения. При смене темы начинается новый диалог.</p></aside><div class="chat-panel"><div class="chat-header"><span class="tutor-avatar">✳</span><div><strong>ACEat Tutor</strong><span id="chat-topic-name">Algebra</span></div><button id="clear-chat" class="text-button" type="button">Начать заново</button></div><div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Диалог с ИИ по SAT"></div><div class="chat-bottom"><div class="quick-prompts" aria-label="Примеры запросов"><button type="button" data-prompt="explain">Объясни тему</button><button type="button" data-prompt="example">Покажи пример</button><button type="button" data-prompt="mistakes">Частые ошибки</button></div><form id="chat-form" class="chat-form"><label class="sr-only" for="chat-input">Сообщение помощнику</label><input id="chat-input" maxlength="3000" placeholder="Задай вопрос или пришли условие задачи…" autocomplete="off"><button type="submit" aria-label="Отправить сообщение"><svg><use href="#i-arrow"/></svg></button></form><p class="chat-disclaimer">Вопрос и последние сообщения отправляются ИИ. Ответы могут содержать ошибки; проверяй важные шаги.</p></div></div></div>
+      </section>
+      <section class="page" id="page-exam" data-page="exam" aria-labelledby="exam-title" hidden>
+        <div class="page-kicker"><a href="#past-exams">← К вариантам</a><span>ПРАКТИКА В ТВОЁМ ТЕМПЕ</span></div>
+        <div class="module-heading"><div><p class="eyebrow">ПРОХОДИ ПРЯМО ЗДЕСЬ</p><h1 id="exam-title">Практика SAT</h1><p class="page-description">Оригинальные задания College Board, ответы и проверка результата — в одной вкладке. Неадаптивный бумажный вариант, 120 вопросов.</p></div></div>
+        <p id="exam-state" role="status">Загружаем вариант…</p>
+        <div id="exam-body" hidden>
+          <section id="exam-result" class="exam-result" aria-label="Результат попытки" aria-live="polite" hidden></section>
+          <div class="exam-toolbar"><label for="exam-module" class="sr-only">Раздел и модуль</label><select id="exam-module"></select><span id="exam-progress" role="status"></span><button id="exam-restart" type="button" class="text-button">Начать заново</button></div>
+          <progress id="exam-progress-bar" class="exam-progress-bar" value="0" max="120" aria-label="Количество записанных ответов"></progress>
+          <div class="exam-layout">
+            <div class="exam-paper-panel"><div class="exam-paper-toolbar"><button id="exam-page-prev" type="button" aria-label="Предыдущая страница оригинала">←</button><span id="exam-page-number"></span><button id="exam-page-next" type="button" aria-label="Следующая страница оригинала">→</button><button id="exam-zoom" type="button" aria-label="Увеличить страницу">150%</button><a id="exam-original" target="_blank" rel="noopener noreferrer">Оригинал ↗</a></div><p id="exam-paper-status" class="editor-help" role="status"></p><div id="exam-paper-view" class="exam-canvas-wrap"><canvas id="exam-paper" role="img" aria-label="Страница оригинальных заданий College Board"></canvas></div><p class="editor-help">При выборе вопроса откроется его страница. На ней может быть несколько заданий: ориентируйся на номер. Кнопка 150% увеличивает текст и рисунки.</p></div>
+            <aside class="exam-answer-panel" aria-label="Ответы на вопросы">
+              <p id="exam-module-title" class="tiny-label"></p><h2 id="exam-question-title"></h2>
+              <fieldset id="exam-choices" class="exam-choices"><legend>Выбери ответ</legend></fieldset>
+              <div id="exam-numeric-wrap" hidden><label for="exam-numeric">Числовой ответ</label><input id="exam-numeric" type="text" maxlength="24" autocomplete="off" spellcheck="false" aria-describedby="exam-input-help"><p id="exam-input-help" class="editor-help"></p></div>
+              <button id="exam-clear-answer" type="button" class="exam-clear">Очистить ответ</button>
+              <p id="exam-feedback" class="exam-feedback" role="status" hidden></p>
+              <label class="exam-flag"><input id="exam-flag" type="checkbox"> Отметить для повторения</label>
+              <div class="exam-question-actions"><button id="exam-prev" type="button" class="button secondary">← Назад</button><button id="exam-next" type="button" class="button secondary">Дальше →</button></div>
+              <p class="tiny-label">ВОПРОСЫ МОДУЛЯ</p><nav id="exam-question-grid" class="exam-question-grid" aria-label="Навигация по вопросам"></nav>
+              <p class="editor-help">Зелёный — ответ записан; точка — вопрос отмечен. После проверки появятся верные и неверные ответы.</p>
+              <button id="exam-finish" type="button" class="button primary">Завершить и проверить</button><p id="exam-save-status" class="editor-help" role="status"></p>
+            </aside>
+          </div>
+        </div>
+        <dialog id="exam-confirm" class="exam-dialog" aria-labelledby="exam-confirm-title"><h2 id="exam-confirm-title"></h2><p id="exam-confirm-text"></p><div class="exam-question-actions"><button id="exam-confirm-cancel" type="button" class="button secondary">Продолжить попытку</button><button id="exam-confirm-ok" type="button" class="button primary"></button></div></dialog>
       </section>
       <section class="page" id="page-past-exams" data-page="past-exams" aria-labelledby="past-title" hidden>
         <div class="page-kicker"><span>03 / ARCHIVE</span><span>ПОЗНАКОМЬСЯ С ФОРМАТОМ</span></div>

@@ -1,0 +1,1502 @@
+{
+  "format": "aceat.paper-exam.v1",
+  "revision": 1,
+  "id": "sat-practice-10",
+  "title": "SAT Practice Test 10",
+  "paper_url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-10-digital.pdf",
+  "scoring_url": "https://satsuite.collegeboard.org/media/pdf/scoring-sat-practice-test-10-digital.pdf",
+  "explanations_url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-10-answers-digital.pdf",
+  "source": "College Board · official nonadaptive paper practice test",
+  "source_sha256": {
+    "paper": "4dda8203caba0f4a377f6b0ff72b194799483cd39e3145e96f68dfc872d1cc2c",
+    "scoring": "d33ca9d96e78888d26b4685d099e0598e56cc8122703b3f4e8e5b9d1ac3e35c2"
+  },
+  "page_count": 56,
+  "modules": [
+    {
+      "id": "reading-1",
+      "section": "reading",
+      "title": "Reading & Writing · Модуль 1",
+      "questions": [
+        {
+          "number": 1,
+          "page": 4,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 2,
+          "page": 4,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 3,
+          "page": 5,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 4,
+          "page": 5,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 5,
+          "page": 5,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 6,
+          "page": 5,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 7,
+          "page": 6,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 8,
+          "page": 6,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 9,
+          "page": 7,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 10,
+          "page": 7,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 11,
+          "page": 8,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 12,
+          "page": 8,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 13,
+          "page": 9,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 14,
+          "page": 9,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 15,
+          "page": 10,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 16,
+          "page": 10,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 17,
+          "page": 11,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 18,
+          "page": 12,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 19,
+          "page": 12,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 20,
+          "page": 12,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 21,
+          "page": 13,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 22,
+          "page": 13,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 23,
+          "page": 13,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 24,
+          "page": 13,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 25,
+          "page": 14,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 26,
+          "page": 14,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 27,
+          "page": 14,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 28,
+          "page": 14,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 29,
+          "page": 15,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 30,
+          "page": 15,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 31,
+          "page": 15,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 32,
+          "page": 16,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 33,
+          "page": 16,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reading-2",
+      "section": "reading",
+      "title": "Reading & Writing · Модуль 2",
+      "questions": [
+        {
+          "number": 1,
+          "page": 18,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 2,
+          "page": 18,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 3,
+          "page": 19,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 4,
+          "page": 19,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 5,
+          "page": 19,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 6,
+          "page": 20,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 7,
+          "page": 20,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 8,
+          "page": 21,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 9,
+          "page": 21,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 10,
+          "page": 22,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 11,
+          "page": 22,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 12,
+          "page": 23,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 13,
+          "page": 24,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 14,
+          "page": 25,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 15,
+          "page": 26,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 16,
+          "page": 26,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 17,
+          "page": 26,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 18,
+          "page": 27,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 19,
+          "page": 27,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 20,
+          "page": 27,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 21,
+          "page": 27,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 22,
+          "page": 27,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 23,
+          "page": 28,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 24,
+          "page": 28,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 25,
+          "page": 28,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 26,
+          "page": 28,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 27,
+          "page": 29,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 28,
+          "page": 29,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 29,
+          "page": 29,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 30,
+          "page": 30,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 31,
+          "page": 30,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 32,
+          "page": 31,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 33,
+          "page": 31,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "math-1",
+      "section": "math",
+      "title": "Math · Модуль 1",
+      "questions": [
+        {
+          "number": 1,
+          "page": 34,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 2,
+          "page": 34,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 3,
+          "page": 35,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 4,
+          "page": 36,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 5,
+          "page": 38,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 6,
+          "page": 38,
+          "type": "number",
+          "answers": [
+            "77"
+          ]
+        },
+        {
+          "number": 7,
+          "page": 38,
+          "type": "number",
+          "answers": [
+            "25"
+          ]
+        },
+        {
+          "number": 8,
+          "page": 38,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 9,
+          "page": 38,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 10,
+          "page": 39,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 11,
+          "page": 39,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 12,
+          "page": 39,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 13,
+          "page": 39,
+          "type": "number",
+          "answers": [
+            "1"
+          ]
+        },
+        {
+          "number": 14,
+          "page": 39,
+          "type": "number",
+          "answers": [
+            "76"
+          ]
+        },
+        {
+          "number": 15,
+          "page": 39,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 16,
+          "page": 40,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 17,
+          "page": 40,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 18,
+          "page": 40,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 19,
+          "page": 40,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 20,
+          "page": 41,
+          "type": "number",
+          "answers": [
+            "35"
+          ]
+        },
+        {
+          "number": 21,
+          "page": 41,
+          "type": "number",
+          "answers": [
+            "113"
+          ]
+        },
+        {
+          "number": 22,
+          "page": 41,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 23,
+          "page": 41,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 24,
+          "page": 41,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 25,
+          "page": 41,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 26,
+          "page": 42,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 27,
+          "page": 42,
+          "type": "number",
+          "answers": [
+            "29/3",
+            "9.666",
+            "9.667"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "math-2",
+      "section": "math",
+      "title": "Math · Модуль 2",
+      "questions": [
+        {
+          "number": 1,
+          "page": 46,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 2,
+          "page": 46,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 3,
+          "page": 46,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 4,
+          "page": 47,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 5,
+          "page": 47,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 6,
+          "page": 47,
+          "type": "number",
+          "answers": [
+            "79"
+          ]
+        },
+        {
+          "number": 7,
+          "page": 47,
+          "type": "number",
+          "answers": [
+            "2"
+          ]
+        },
+        {
+          "number": 8,
+          "page": 47,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 9,
+          "page": 47,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 10,
+          "page": 48,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 11,
+          "page": 48,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 12,
+          "page": 48,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 13,
+          "page": 48,
+          "type": "number",
+          "answers": [
+            "41"
+          ]
+        },
+        {
+          "number": 14,
+          "page": 48,
+          "type": "number",
+          "answers": [
+            "11875"
+          ]
+        },
+        {
+          "number": 15,
+          "page": 49,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 16,
+          "page": 49,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 17,
+          "page": 50,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 18,
+          "page": 50,
+          "type": "choice",
+          "answers": [
+            "A"
+          ]
+        },
+        {
+          "number": 19,
+          "page": 50,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 20,
+          "page": 50,
+          "type": "number",
+          "answers": [
+            "5"
+          ]
+        },
+        {
+          "number": 21,
+          "page": 50,
+          "type": "number",
+          "answers": [
+            "0.25",
+            "1/4"
+          ]
+        },
+        {
+          "number": 22,
+          "page": 51,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 23,
+          "page": 51,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 24,
+          "page": 51,
+          "type": "choice",
+          "answers": [
+            "C"
+          ]
+        },
+        {
+          "number": 25,
+          "page": 51,
+          "type": "choice",
+          "answers": [
+            "D"
+          ]
+        },
+        {
+          "number": 26,
+          "page": 52,
+          "type": "choice",
+          "answers": [
+            "B"
+          ]
+        },
+        {
+          "number": 27,
+          "page": 52,
+          "type": "number",
+          "answers": [
+            "104"
+          ]
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "reading": [
+      [
+        200,
+        200
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        230
+      ],
+      [
+        220,
+        240
+      ],
+      [
+        220,
+        250
+      ],
+      [
+        230,
+        260
+      ],
+      [
+        230,
+        270
+      ],
+      [
+        240,
+        280
+      ],
+      [
+        240,
+        290
+      ],
+      [
+        250,
+        300
+      ],
+      [
+        250,
+        310
+      ],
+      [
+        260,
+        320
+      ],
+      [
+        270,
+        330
+      ],
+      [
+        280,
+        340
+      ],
+      [
+        300,
+        340
+      ],
+      [
+        310,
+        350
+      ],
+      [
+        320,
+        360
+      ],
+      [
+        330,
+        370
+      ],
+      [
+        330,
+        370
+      ],
+      [
+        340,
+        380
+      ],
+      [
+        350,
+        390
+      ],
+      [
+        350,
+        390
+      ],
+      [
+        360,
+        400
+      ],
+      [
+        370,
+        410
+      ],
+      [
+        370,
+        410
+      ],
+      [
+        380,
+        420
+      ],
+      [
+        390,
+        430
+      ],
+      [
+        400,
+        440
+      ],
+      [
+        400,
+        440
+      ],
+      [
+        410,
+        450
+      ],
+      [
+        420,
+        460
+      ],
+      [
+        430,
+        470
+      ],
+      [
+        440,
+        480
+      ],
+      [
+        450,
+        490
+      ],
+      [
+        460,
+        500
+      ],
+      [
+        460,
+        500
+      ],
+      [
+        470,
+        510
+      ],
+      [
+        470,
+        530
+      ],
+      [
+        480,
+        540
+      ],
+      [
+        490,
+        550
+      ],
+      [
+        500,
+        560
+      ],
+      [
+        510,
+        570
+      ],
+      [
+        520,
+        580
+      ],
+      [
+        530,
+        590
+      ],
+      [
+        540,
+        600
+      ],
+      [
+        550,
+        610
+      ],
+      [
+        570,
+        630
+      ],
+      [
+        580,
+        640
+      ],
+      [
+        590,
+        650
+      ],
+      [
+        600,
+        660
+      ],
+      [
+        610,
+        670
+      ],
+      [
+        620,
+        680
+      ],
+      [
+        630,
+        690
+      ],
+      [
+        640,
+        700
+      ],
+      [
+        670,
+        710
+      ],
+      [
+        680,
+        720
+      ],
+      [
+        690,
+        730
+      ],
+      [
+        700,
+        740
+      ],
+      [
+        720,
+        760
+      ],
+      [
+        730,
+        770
+      ],
+      [
+        740,
+        780
+      ],
+      [
+        760,
+        780
+      ],
+      [
+        770,
+        800
+      ],
+      [
+        800,
+        800
+      ]
+    ],
+    "math": [
+      [
+        200,
+        200
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        220
+      ],
+      [
+        210,
+        230
+      ],
+      [
+        210,
+        240
+      ],
+      [
+        220,
+        250
+      ],
+      [
+        230,
+        260
+      ],
+      [
+        240,
+        300
+      ],
+      [
+        250,
+        310
+      ],
+      [
+        260,
+        320
+      ],
+      [
+        280,
+        340
+      ],
+      [
+        310,
+        350
+      ],
+      [
+        320,
+        360
+      ],
+      [
+        330,
+        370
+      ],
+      [
+        340,
+        380
+      ],
+      [
+        350,
+        390
+      ],
+      [
+        360,
+        400
+      ],
+      [
+        370,
+        410
+      ],
+      [
+        380,
+        420
+      ],
+      [
+        380,
+        420
+      ],
+      [
+        390,
+        430
+      ],
+      [
+        390,
+        430
+      ],
+      [
+        400,
+        440
+      ],
+      [
+        410,
+        450
+      ],
+      [
+        420,
+        460
+      ],
+      [
+        430,
+        470
+      ],
+      [
+        440,
+        480
+      ],
+      [
+        450,
+        490
+      ],
+      [
+        460,
+        500
+      ],
+      [
+        470,
+        510
+      ],
+      [
+        480,
+        520
+      ],
+      [
+        490,
+        530
+      ],
+      [
+        490,
+        550
+      ],
+      [
+        510,
+        570
+      ],
+      [
+        520,
+        580
+      ],
+      [
+        530,
+        590
+      ],
+      [
+        540,
+        600
+      ],
+      [
+        550,
+        610
+      ],
+      [
+        560,
+        620
+      ],
+      [
+        580,
+        640
+      ],
+      [
+        590,
+        650
+      ],
+      [
+        600,
+        660
+      ],
+      [
+        610,
+        670
+      ],
+      [
+        620,
+        680
+      ],
+      [
+        640,
+        700
+      ],
+      [
+        650,
+        710
+      ],
+      [
+        670,
+        730
+      ],
+      [
+        680,
+        740
+      ],
+      [
+        700,
+        760
+      ],
+      [
+        730,
+        770
+      ],
+      [
+        750,
+        780
+      ],
+      [
+        770,
+        790
+      ],
+      [
+        780,
+        800
+      ],
+      [
+        800,
+        800
+      ]
+    ]
+  }
+}

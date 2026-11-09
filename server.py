@@ -8,6 +8,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from textbook_engine.client import LLMRequestError, load_config
+from exam_source import get_paper, PaperSourceError
 from tutor_graph import CHAT_GRAPH, MAX_HISTORY_MESSAGES, TOPICS
 
 ROOT = Path(__file__).resolve().parent
@@ -15,7 +16,7 @@ MAX_BODY = 64 * 1024
 CHAT_SLOT = threading.BoundedSemaphore(1)
 ALLOWED_ORIGINS = {"https://the-fabulous.github.io"}
 ALLOWED_ORIGINS.update(origin.strip().rstrip("/") for origin in os.environ.get("CHAT_ALLOWED_ORIGINS", "").split(",") if origin.strip())
-STATIC_FILES = {"index.html", "app.js", "chat.js", "style.css", "chat-config.js"}
+STATIC_FILES = {"index.html", "app.js", "chat.js", "exam.js", "style.css", "exam.css", "chat-config.js"}
 
 
 def validate_chat(body):
@@ -88,6 +89,27 @@ class Handler(BaseHTTPRequestHandler):
         path = unquote(urlsplit(self.path).path)
         if path == "/api/health":
             self.send_json(200, {"ok": True, "configured": bool(load_config()["OPENAI_API_KEY"])})
+            return
+        if path.startswith("/api/papers/"):
+            if not self.allowed_origin():
+                self.send_json(403, {"ok": False, "error": "Этот адрес сайта не разрешён."})
+                return
+            try:
+                data = get_paper(path.removeprefix("/api/papers/"))
+            except KeyError:
+                self.send_json(404, {"ok": False, "error": "Вариант не найден."})
+                return
+            except PaperSourceError:
+                self.send_json(502, {"ok": False, "error": "Оригинальные задания временно недоступны."})
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "application/pdf")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            try:
+                self.wfile.write(data)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
             return
         relative = path.lstrip("/") or "index.html"
         parts = Path(relative).parts

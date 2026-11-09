@@ -43,6 +43,7 @@
   "pastExams": [
     {
       "id": "sat-practice-9",
+      "exam_path": "./data/exams/sat-practice-9.json",
       "title": "SAT Practice Test 9",
       "author": "College Board",
       "subject": "mixed",
@@ -56,6 +57,7 @@
     },
     {
       "id": "sat-practice-10",
+      "exam_path": "./data/exams/sat-practice-10.json",
       "title": "SAT Practice Test 10",
       "author": "College Board",
       "subject": "mixed",

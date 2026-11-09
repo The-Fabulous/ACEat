@@ -2,10 +2,13 @@
 !requirements-chat.txt
 !server.py
 !tutor_graph.py
+!exam_source.py
 !index.html
 !app.js
 !chat.js
+!exam.js
 !style.css
+!exam.css
 !chat-config.js
 !textbook_engine/
 !textbook_engine/__init__.py

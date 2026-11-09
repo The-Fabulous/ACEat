@@ -94,6 +94,16 @@ class ApiTests(unittest.TestCase):
             self.assertEqual(self.post().status_code, 503)
             graph.assert_not_called()
 
+    def test_original_exam_pdf_is_available_to_pages_without_llm_calls(self):
+        with patch.object(server, "get_paper", return_value=b"%PDF-test-source") as source, patch.object(server.CHAT_GRAPH, "invoke") as graph:
+            response = requests.get(self.base + "/api/papers/sat-practice-9", headers={"Origin": "https://the-fabulous.github.io"}, timeout=5)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.headers["Content-Type"], "application/pdf")
+            self.assertEqual(response.headers["Access-Control-Allow-Origin"], "https://the-fabulous.github.io")
+            self.assertEqual(response.content, b"%PDF-test-source")
+            source.assert_called_once_with("sat-practice-9")
+            graph.assert_not_called()
+
     def test_busy_and_provider_error_do_not_leak_secrets(self):
         with patch.object(server, "load_config", return_value={"OPENAI_API_KEY": "test-only"}):
             server.CHAT_SLOT.acquire()

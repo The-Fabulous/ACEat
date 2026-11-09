@@ -1,7 +1,7 @@
 'use strict';
 
 const routes = ['home', 'textbooks', 'chat', 'past-exams', 'challenge'];
-const routeTitles = { home: 'Пространство подготовки к SAT', textbooks: 'Учебники', chat: 'ИИ по темам', 'past-exams': 'Прошлые экзамены', challenge: 'Challenge-экзамены' };
+const routeTitles = { home: 'Пространство подготовки к SAT', textbooks: 'Учебники', chat: 'ИИ по темам', 'past-exams': 'Прошлые экзамены', challenge: 'Challenge-экзамены', exam: 'Практика SAT' };
 let routeInitialized = false;
 let resolveCatalog;
 const catalogReady = new Promise(resolve => { resolveCatalog = resolve; });
@@ -11,11 +11,12 @@ function showRoute() {
   // The skip link targets main without changing the currently selected module.
   if (requested === 'main') { document.getElementById('main').focus(); return; }
   const bookRoute = /^book\/([a-z][a-z0-9-]{0,63})(?:\/(\d+))?$/.exec(requested);
-  const route = bookRoute ? 'book' : routes.includes(requested) ? requested : 'home';
-  if (requested && route !== requested && !bookRoute) history.replaceState(null, '', '#home');
+  const examRoute = /^exam\/([a-z][a-z0-9-]{0,63})$/.exec(requested);
+  const route = bookRoute ? 'book' : examRoute ? 'exam' : routes.includes(requested) ? requested : 'home';
+  if (requested && route !== requested && !bookRoute && !examRoute) history.replaceState(null, '', '#home');
   document.querySelectorAll('[data-page]').forEach(page => { page.hidden = page.dataset.page !== route; });
   document.querySelectorAll('[data-route]').forEach(link => {
-    const active = link.dataset.route === (route === 'book' ? 'textbooks' : route);
+    const active = link.dataset.route === (route === 'book' ? 'textbooks' : route === 'exam' ? 'past-exams' : route);
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
@@ -23,6 +24,7 @@ function showRoute() {
   if (routeInitialized) { document.getElementById('main').focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
   routeInitialized = true;
   if (bookRoute) openBook(bookRoute[1], Number(bookRoute[2] || 0), requested);
+  if (examRoute) window.ACEatExams?.open(examRoute[1]); else window.ACEatExams?.leave();
 }
 window.addEventListener('hashchange', showRoute);
 showRoute();
@@ -44,9 +46,11 @@ function resourceCard(item, kind) {
     const count = document.createElement('span'); count.className = 'outline-badge'; count.textContent = `Глав: ${item.chapter_count}`; card.append(count);
   }
   if (item.source) { const source = document.createElement('p'); source.textContent = `Источник: ${item.source}`; card.append(source); }
-  const url = item.format === 'classifi' && /^[a-z][a-z0-9-]{0,63}$/.test(item.id) ? new URL(`#book/${item.id}`, location.href) : safeResourceUrl(item.url);
+  const interactive = kind === 'pastExams' && /^[a-z][a-z0-9-]{0,63}$/.test(item.id) && /^\.\/data\/exams\/[a-z0-9-]+\.json$/.test(item.exam_path || '');
+  const url = interactive ? new URL(`#exam/${item.id}`, location.href) : item.format === 'classifi' && /^[a-z][a-z0-9-]{0,63}$/.test(item.id) ? new URL(`#book/${item.id}`, location.href) : safeResourceUrl(item.url);
   if (url) {
-    const link = document.createElement('a'); link.href = url.href; link.textContent = kind === 'textbooks' ? 'Открыть учебник ↗' : 'Открыть вариант ↗';
+    const link = document.createElement('a'); link.href = url.href; link.textContent = interactive ? 'Пройти на сайте →' : kind === 'textbooks' ? 'Открыть учебник ↗' : 'Открыть вариант ↗';
+    if (interactive) link.className = 'button secondary exam-start';
     if (url.origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
     card.append(link);
   } else { const status = document.createElement('span'); status.className = 'outline-badge'; status.textContent = 'Материал готовится'; card.append(status); }
@@ -76,7 +80,7 @@ document.querySelectorAll('[data-book-filter]').forEach(button => {
 });
 async function loadCatalog() {
   try {
-    const response = await fetch('./data/catalog.json'); if (!response.ok) throw new Error(`Catalog HTTP ${response.status}`);
+    const response = await fetch('./data/catalog.json', { cache: 'no-store' }); if (!response.ok) throw new Error(`Catalog HTTP ${response.status}`);
     const data = await response.json();
     for (const key of Object.keys(catalog)) { if (!Array.isArray(data[key]) || data[key].some(item => !item || typeof item.title !== 'string' || !item.title.trim())) throw new Error('Invalid catalog'); }
     catalog = data;
