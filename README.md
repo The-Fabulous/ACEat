@@ -1,8 +1,10 @@
 # ACEat — подготовка к SAT
 
+**Сайт на Vercel: [aceat.vercel.app](https://aceat.vercel.app/)**
+
 Четыре модуля: учебники, ИИ-чат по темам SAT, архив прошлых экзаменов и авторские Challenge-экзамены.
 
-Сайт: https://the-fabulous.github.io/ACEat/
+GitHub Pages: [the-fabulous.github.io/ACEat](https://the-fabulous.github.io/ACEat/)
 
 ## Полный деплой на Vercel
 
