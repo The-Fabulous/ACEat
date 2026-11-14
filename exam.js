@@ -51,6 +51,9 @@
     }
     if (Number.isInteger(saved.index) && saved.index >= 0 && saved.index < list.length) state.index = saved.index;
     state.submitted = saved.submitted === true;
+    state.attemptId = /^[0-9a-f-]{36}$/i.test(saved.attemptId || '') ? saved.attemptId : null;
+    state.submittedAt = Number.isFinite(Date.parse(saved.submittedAt)) ? saved.submittedAt : null;
+    state.updatedAt = Number.isFinite(Date.parse(saved.updatedAt)) ? saved.updatedAt : null;
     return state;
   }
   function grade(exam, answers) {
@@ -124,10 +127,14 @@
   function storageKey() { return attemptStorageKey; }
   function save() {
     if (!exam || storageOwner !== (window.ACEatAccount?.identity() || null)) return;
+    const previousUpdated = state.updatedAt;
     state.updatedAt = new Date().toISOString();
+    if (!state.attemptId) state.attemptId = state.submitted && window.ACEatResultsModel ? window.ACEatResultsModel.legacyId(exam, state) : crypto.randomUUID();
+    if (state.submitted && !state.submittedAt) state.submittedAt = previousUpdated || state.updatedAt;
     try { localStorage.setItem(storageKey(), JSON.stringify(state)); get('exam-save-status').textContent = 'Прогресс сохранён в этом браузере'; }
     catch { get('exam-save-status').textContent = 'Браузер блокирует сохранение. Прогресс доступен до закрытия страницы.'; }
     window.ACEatAccount?.saveExam(exam, state);
+    if (state.submitted) window.ACEatResults?.capture(exam, state, storageOwner);
   }
   function setPage(next) {
     const value = Math.min(exam.page_count, Math.max(1, next));
@@ -249,9 +256,9 @@
   });
   get('exam-finish').addEventListener('click', () => {
     const unanswered = grade(exam, state.answers).unanswered;
-    confirmAction('Завершить попытку?', unanswered ? `Без ответа осталось ${unanswered} вопросов. Можно вернуться к ним или проверить текущие ответы.` : 'Все ответы записаны. Проверить результат?', 'Проверить ответы', () => { state.submitted = true; save(); renderQuestion(); renderResult(); get('exam-result').scrollIntoView({ behavior: 'smooth' }); });
+    confirmAction('Завершить попытку?', unanswered ? `Без ответа осталось ${unanswered} вопросов. Можно вернуться к ним или проверить текущие ответы.` : 'Все ответы записаны. Проверить результат?', 'Проверить ответы', () => { state.submitted = true; state.submittedAt = new Date().toISOString(); save(); renderQuestion(); renderResult(); get('exam-result').scrollIntoView({ behavior: 'smooth' }); });
   });
-  get('exam-restart').addEventListener('click', () => confirmAction('Начать заново?', 'Текущие ответы и результат этого варианта будут заменены новой попыткой.', 'Начать заново', () => { state = restore(exam, null); save(); renderResult(); renderQuestion(); }));
+  get('exam-restart').addEventListener('click', () => confirmAction('Начать заново?', 'Начнётся новая попытка. Завершённый результат останется в истории кабинета.', 'Начать заново', () => { if (state.submitted) window.ACEatResults?.capture(exam, state, storageOwner); state = restore(exam, null); save(); renderResult(); renderQuestion(); }));
   function leave() {
     generation += 1; exam = null; page = null; confirmation = null;
     releasePaper(); get('exam-confirm').close();

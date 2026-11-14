@@ -11,6 +11,7 @@
 !auth-config.js
 !chat.js
 !chat-store.js
+!exam-history.js
 !chat-history.css
 !exam.js
 !library.js

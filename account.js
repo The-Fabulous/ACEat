@@ -16,7 +16,9 @@
     return {
       answers, flags: Array.isArray(value?.flags) ? value.flags.filter(key => /^[a-z0-9-]+:\d+$/.test(key)).slice(0, 300) : [],
       index: Number.isInteger(value?.index) && value.index >= 0 && value.index < 1000 ? value.index : 0,
-      submitted: value?.submitted === true, updatedAt: stamp(value?.updatedAt) ? value.updatedAt : ''
+      submitted: value?.submitted === true, updatedAt: stamp(value?.updatedAt) ? value.updatedAt : '',
+      attemptId: /^[0-9a-f-]{36}$/i.test(value?.attemptId || '') ? value.attemptId : null,
+      submittedAt: stamp(value?.submittedAt) ? value.submittedAt : null
     };
   }
   function latest(local, remote) {
@@ -105,6 +107,7 @@
       const link = addText(card, 'a', state?.submitted ? 'Посмотреть результат →' : meaningful(state) ? 'Продолжить попытку →' : 'Начать вариант →'); link.href = `#exam/${entry.id}`; get('account-exams-list').append(card);
     }
     get('account-exams-value').textContent = String(completed); get('account-import-panel').hidden = !guestProgressExists();
+    window.ACEatResults?.render(target);
   }
   function queue(table, key, payload) {
     if (!user || !client) return;
@@ -248,12 +251,23 @@
     if (result.error) throw result.error;
     return result.data;
   }
+  async function fetchResults(owner, offset = 0) {
+    if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
+    const result = await client.from('aceat_exam_results').select('*').eq('user_id', owner).order('completed_at', { ascending: false }).order('id', { ascending: false }).range(offset, offset + 99);
+    if (result.error) throw result.error;
+    return result.data;
+  }
+  async function pushResult(owner, row) {
+    if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
+    const result = await client.from('aceat_exam_results').upsert({ ...row, user_id: owner, is_demo: false }, { onConflict: 'user_id,id', ignoreDuplicates: true });
+    if (result.error) throw result.error;
+  }
   async function pushChatMessages(owner, rows) {
     if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
     const result = await client.from('aceat_chat_messages').upsert(rows.map(row => ({ ...row, user_id: owner })), { onConflict: 'user_id,id', ignoreDuplicates: true });
     if (result.error) throw result.error;
   }
-  window.ACEatAccount = { ready, open: render, identity: () => user?.id || null, examStorageKey: exam => examKey(user?.id, exam), saveExam, trackBook, fetchChatPage, pushChatMessages, isSignedIn: () => Boolean(user), isSynced: () => syncAvailable };
+  window.ACEatAccount = { ready, fetchResults, pushResult, open: render, identity: () => user?.id || null, examStorageKey: exam => examKey(user?.id, exam), saveExam, trackBook, fetchChatPage, pushChatMessages, isSignedIn: () => Boolean(user), isSynced: () => syncAvailable };
   render(); catalogReady.then(() => { if (user) renderDashboard(); });
   (async () => {
     try {
