@@ -21,10 +21,12 @@ export async function runExamHistoryChecks(source, examSource, exam) {
   const disk = new Map(), nodes = new Map(), events = new Map();
   const node = id => { if (!nodes.has(id)) nodes.set(id, { dataset: {}, children: [], textContent: '', hidden: false, events: {}, append(child) { this.children.push(child); }, replaceChildren() { this.children = []; }, addEventListener(type, fn) { this.events[type] = fn; } }); return nodes.get(id); };
   const document = { getElementById: node, createElement: tag => node(tag + nodes.size) };
+  let chartRows = [], chartComplete = false;
   const account = { ready: Promise.resolve(), identity: () => owner,
+    async fetchScorePage(uid, offset) { return remote.filter(row => row.user_id === uid).slice(offset, offset + 1000).map(({ id, score, completed_at, is_demo }) => ({ id, score, completed_at, is_demo })); },
     async fetchResults(uid, offset) { if (deferred) await deferred; if (fail) throw Error('offline'); return remote.filter(row => row.user_id === uid).sort((a, b) => Date.parse(b.completed_at) - Date.parse(a.completed_at)).slice(offset, offset + 100); },
     async pushResult(uid, row) { if (fail) throw Error('offline'); if (!remote.some(item => item.user_id === uid && item.id === row.id)) remote.push({ ...row, user_id: uid }); } };
-  const window = { ACEatAccount: account, ACEatExamEngine: engine, addEventListener(type, fn) { events.set(type, fn); } };
+  const window = { ACEatAccount: account, ACEatExamEngine: engine, ACEatProgressChart: { render(rows, target, complete) { chartRows = rows; chartComplete = complete; } }, addEventListener(type, fn) { events.set(type, fn); } };
   const storage = { getItem: key => disk.get(key), setItem: (key, value) => disk.set(key, value) };
   const addText = (parent, tag, text) => { const child = document.createElement(tag); child.textContent = text; parent.append(child); return child; };
   new Function('globalThis', 'window', 'document', 'localStorage', 'catalogReady', 'catalog', 'addText', source)({}, window, document, storage, Promise.resolve(), { pastExams: [] }, addText);
@@ -32,6 +34,7 @@ export async function runExamHistoryChecks(source, examSource, exam) {
   await tick(); window.ACEatResults.render(1400);
   assert(node('account-current-score').textContent === '1370' && node('account-score-gap').textContent === '30', 'Dashboard restores remote scores and target gap');
   assert(node('account-history-list').children.length === 2 && node('account-score-note').textContent.includes('Демонстрационный'), 'Seed records appear with demo label');
+  assert(chartRows.length === 2 && chartComplete, 'Chart receives all initial scores');
   const attempt = { ...saved, attemptId: 'aaaaaaaa-0000-4000-8000-000000000001', submittedAt: '2026-02-01T00:00:00Z' };
   window.ACEatResults.capture(exam, attempt, owner); await tick();
   window.ACEatResults.capture(exam, { ...attempt, index: 10 }, owner); await tick();
@@ -45,5 +48,9 @@ export async function runExamHistoryChecks(source, examSource, exam) {
   owner = 'bob'; events.get('aceat:identity-changing')();
   assert(node('account-current-score').textContent === '—', 'Switching account clears previous metrics');
   window.ACEatResults.capture(exam, attempt, 'alice'); await tick(); assert(remote.length === 4, 'Stale exam cannot attach to another account');
+  assert(chartRows.length === 0, 'Account switch clears the previous chart');
+  for (let i = 0; i < 1005; i++) remote.push({ ...demos[0], id: '00000000-0000-4000-8000-' + i.toString(16).padStart(12, '0'), user_id: 'bob' });
+  await window.ACEatResults.refresh();
+  assert(chartRows.length === 1005 && chartComplete && node('account-history-list').children.length === 20, 'Chart loads all score pages independently of the visible history');
   return 'Exam history: immutable IDs, restart/reload, all snapshots, 1320→1370, gap, offline retry and account isolation passed';
 }

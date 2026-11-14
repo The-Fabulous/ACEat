@@ -28,17 +28,20 @@
     if (!caches.has(id)) {
       let saved; try { saved = JSON.parse(localStorage.getItem(id)); } catch {}
       const rows = new Map((Array.isArray(saved?.rows) ? saved.rows : []).map(clean).filter(Boolean).map(row => [row.id, row]));
-      caches.set(id, { rows, pending: new Set((Array.isArray(saved?.pending) ? saved.pending : []).filter(id => rows.has(id))), more: false, offset: 0, error: false, persisted: true, flushing: null });
+      caches.set(id, { rows, chartRows: Array.isArray(saved?.chartRows) ? saved.chartRows : [], chartComplete: false, pending: new Set((Array.isArray(saved?.pending) ? saved.pending : []).filter(id => rows.has(id))), more: false, offset: 0, error: false, persisted: true, flushing: null });
     }
     return caches.get(id);
   }
   function persist(owner, state) {
-    try { localStorage.setItem(key(owner), JSON.stringify({ rows: [...state.rows.values()], pending: [...state.pending] })); state.persisted = true; } catch { state.persisted = false; }
+    try { localStorage.setItem(key(owner), JSON.stringify({ rows: [...state.rows.values()], chartRows: state.chartRows, pending: [...state.pending] })); state.persisted = true; } catch { state.persisted = false; }
     if (owner === account.identity()) render();
   }
   function render(nextTarget) {
     if (Number.isFinite(nextTarget)) target = nextTarget;
     const state = entry(), rows = [...state.rows.values()].sort(order), current = summary(rows, target);
+    const chartRows = new Map(state.chartRows.map(row => [row.id, row]));
+    for (const row of rows) chartRows.set(row.id, row);
+    window.ACEatProgressChart?.render([...chartRows.values()], target, state.chartComplete || !account.identity(), account.identity());
     get('account-current-score').textContent = current.score === null ? '—' : String(current.score);
     get('account-score-gap').textContent = current.remaining === null ? '—' : String(current.remaining);
     get('account-score-note').textContent = current.latest ? `${current.latest.is_demo ? 'Демонстрационный результат' : 'Последняя завершённая попытка'} · диапазон ${current.latest.result.range.join('–')}` : 'Заверши пробник, чтобы увидеть свой результат';
@@ -105,6 +108,7 @@
   }
   async function refresh(older = false) {
     const owner = account.identity(), token = generation, state = entry(owner);
+    if (!older) state.chartComplete = false;
     try {
       if (!older) await backfill(owner, token);
       if (owner !== account.identity() || token !== generation) return;
@@ -114,6 +118,17 @@
       if (owner !== account.identity() || token !== generation) return;
       for (const raw of rows) { const row = clean(raw); if (row) { state.rows.set(row.id, row); state.pending.delete(row.id); } }
       state.offset = (older ? state.offset : 0) + rows.length; state.more = rows.length === 100; state.error = state.pending.size > 0; persist(owner, state);
+      if (!older && account.fetchScorePage) {
+        const scores = new Map(); let offset = 0;
+        while (true) {
+          const page = await account.fetchScorePage(owner, offset);
+          if (owner !== account.identity() || token !== generation) return;
+          for (const row of page) scores.set(row.id, row);
+          offset += page.length;
+          if (page.length < 1000) break;
+        }
+        state.chartRows = [...scores.values()]; state.chartComplete = true; persist(owner, state);
+      }
     } catch { if (owner === account.identity() && token === generation) { state.error = true; render(); } }
   }
   window.ACEatResults = { capture, render, refresh };

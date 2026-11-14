@@ -17,7 +17,7 @@ MAX_BODY = 64 * 1024
 CHAT_SLOT = threading.BoundedSemaphore(1)
 ALLOWED_ORIGINS = {"https://the-fabulous.github.io"}
 ALLOWED_ORIGINS.update(origin.strip().rstrip("/") for origin in os.environ.get("CHAT_ALLOWED_ORIGINS", "").split(",") if origin.strip())
-STATIC_FILES = {"index.html", "app.js", "chat.js", "chat-store.js", "exam-history.js", "exam.js", "library.js", "account.js", "style.css", "exam.css", "library.css", "account.css", "chat-history.css", "chat-config.js", "auth-config.js"}
+STATIC_FILES = {"index.html", "app.js", "chat.js", "chat-store.js", "exam-history.js", "progress-chart.js", "exam.js", "library.js", "account.js", "style.css", "exam.css", "library.css", "account.css", "chat-history.css", "chat-config.js", "auth-config.js"}
 
 
 def validate_chat(body):

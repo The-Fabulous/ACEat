@@ -262,12 +262,18 @@
     const result = await client.from('aceat_exam_results').upsert({ ...row, user_id: owner, is_demo: false }, { onConflict: 'user_id,id', ignoreDuplicates: true });
     if (result.error) throw result.error;
   }
+  async function fetchScorePage(owner, offset = 0) {
+    if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
+    const result = await client.from('aceat_exam_results').select('id,score,completed_at,is_demo').eq('user_id', owner).order('completed_at', { ascending: true }).order('id', { ascending: true }).range(offset, offset + 999);
+    if (result.error) throw result.error;
+    return result.data;
+  }
   async function pushChatMessages(owner, rows) {
     if (!client || !owner || owner !== user?.id) throw new Error('Account changed');
     const result = await client.from('aceat_chat_messages').upsert(rows.map(row => ({ ...row, user_id: owner })), { onConflict: 'user_id,id', ignoreDuplicates: true });
     if (result.error) throw result.error;
   }
-  window.ACEatAccount = { ready, fetchResults, pushResult, open: render, identity: () => user?.id || null, examStorageKey: exam => examKey(user?.id, exam), saveExam, trackBook, fetchChatPage, pushChatMessages, isSignedIn: () => Boolean(user), isSynced: () => syncAvailable };
+  window.ACEatAccount = { ready, fetchScorePage, fetchResults, pushResult, open: render, identity: () => user?.id || null, examStorageKey: exam => examKey(user?.id, exam), saveExam, trackBook, fetchChatPage, pushChatMessages, isSignedIn: () => Boolean(user), isSynced: () => syncAvailable };
   render(); catalogReady.then(() => { if (user) renderDashboard(); });
   (async () => {
     try {

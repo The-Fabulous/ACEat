@@ -9,15 +9,16 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="exam.css?v=1">
   <link rel="stylesheet" href="library.css?v=1">
-  <link rel="stylesheet" href="account.css?v=attempts-1">
+  <link rel="stylesheet" href="account.css?v=chart-1">
   <link rel="stylesheet" href="chat-history.css?v=1">
   <script src="chat-config.js?v=cloud-1" defer></script>
   <script src="auth-config.js" defer></script>
   <script src="app.js?v=account-1" defer></script>
-  <script src="account.js?v=attempts-1" defer></script>
+  <script src="account.js?v=chart-1" defer></script>
   <script src="library.js?v=account-1" defer></script>
   <script src="exam.js?v=attempts-1" defer></script>
-  <script src="exam-history.js?v=1" defer></script>
+  <script src="progress-chart.js?v=1" defer></script>
+  <script src="exam-history.js?v=chart-1" defer></script>
   <script src="chat-store.js?v=1" defer></script>
   <script src="chat.js?v=history-1" defer></script>
 </head>
@@ -159,7 +160,7 @@
           <div class="account-stats"><article><span class="tiny-label">ЦЕЛЬ ПО SAT</span><strong id="account-goal-value">1400</strong><span>баллов</span></article><article><span class="tiny-label">УЧЕБНИКОВ В РАБОТЕ</span><strong id="account-books-value">0</strong><a href="#textbooks">К библиотеке ↗</a></article><article><span class="tiny-label">ЗАВЕРШЕНО ПОПЫТОК</span><strong id="account-exams-value">0</strong><a href="#past-exams">Потренироваться ↗</a></article></div>
           <div class="account-score-summary"><article><span class="tiny-label">ТЕКУЩИЙ БАЛЛ ПО ПРОБНИКАМ</span><strong id="account-current-score">—</strong><p id="account-score-note"></p></article><article><span class="tiny-label">ДО ЦЕЛЕВОГО БАЛЛА</span><strong id="account-score-gap">—</strong><p id="account-gap-note"></p></article></div><p class="editor-help">Текущий балл — результат последней завершённой попытки. Для диапазона берём середину с округлением до десятков. Это ориентир по пробнику.</p><div class="account-sync"><p id="account-sync-status" role="status">Загружаем прогресс…</p><button id="account-refresh" class="account-text-button" type="button">Синхронизировать</button></div>
           <div id="account-import-panel" class="account-import" hidden><div><strong>Занимался без входа?</strong><p>В этом браузере есть гостевой прогресс. Перенести его в твой аккаунт? Уже начатые в аккаунте варианты останутся на месте.</p></div><button id="account-import" class="button secondary" type="button">Перенести прогресс</button></div>
-          <div class="account-workspace"><div><div class="section-heading"><h2>Продолжить чтение</h2><a href="#textbooks">Все учебники ↗</a></div><div id="account-books-list" class="account-resource-list"></div><div class="section-heading"><h2>Мои экзамены</h2><a href="#past-exams">Все варианты ↗</a></div><p class="editor-help">Текущую попытку можно продолжить. Все завершённые попытки остаются в истории ниже.</p><div id="account-exams-list" class="account-resource-list"></div><div class="section-heading"><h2>История попыток</h2><button id="account-history-refresh" class="account-text-button" type="button">Обновить историю</button></div><p id="account-history-status" class="editor-help" role="status"></p><div id="account-history-list" class="account-resource-list"></div><button id="account-history-more" class="button secondary" type="button" hidden>Показать ещё</button><p class="account-chat-link"><a href="#chat">Продолжить сохранённый диалог с ИИ →</a></p></div>
+          <section class="account-progress"><div class="section-heading"><h2>Прогресс по пробникам</h2><span id="account-progress-target" class="progress-target"></span></div><p class="editor-help">По горизонтали — попытки от старых к новым; по вертикали — баллы SAT. Пунктир — твоя цель. Полые точки — демонстрационные результаты.</p><div id="account-progress-chart" class="progress-chart"></div><p class="editor-help">Попытки по порядку →</p><p id="account-progress-detail" class="progress-detail" role="status"></p><p id="account-progress-note" class="editor-help"></p></section><div class="account-workspace"><div><div class="section-heading"><h2>Продолжить чтение</h2><a href="#textbooks">Все учебники ↗</a></div><div id="account-books-list" class="account-resource-list"></div><div class="section-heading"><h2>Мои экзамены</h2><a href="#past-exams">Все варианты ↗</a></div><p class="editor-help">Текущую попытку можно продолжить. Все завершённые попытки остаются в истории ниже.</p><div id="account-exams-list" class="account-resource-list"></div><div class="section-heading"><h2>История попыток</h2><button id="account-history-refresh" class="account-text-button" type="button">Обновить историю</button></div><p id="account-history-status" class="editor-help" role="status"></p><div id="account-history-list" class="account-resource-list"></div><button id="account-history-more" class="button secondary" type="button" hidden>Показать ещё</button><p class="account-chat-link"><a href="#chat">Продолжить сохранённый диалог с ИИ →</a></p></div>
             <aside class="account-form-card account-profile"><p class="tiny-label">ТВОЯ ЦЕЛЬ</p><h2>Куда идём?</h2><form id="account-profile-form" class="account-form"><label>Имя<input id="account-profile-name" name="display-name" autocomplete="nickname" maxlength="80"></label><label>Желаемый балл SAT<input id="account-target" name="target-score" type="number" min="400" max="1600" step="10" required value="1400"></label><button class="button" type="submit">Сохранить</button></form><p class="editor-help">Цель помогает держать курс. Результаты тренировочных вариантов найдёшь рядом.</p></aside>
           </div>
         </div>
